@@ -20,6 +20,8 @@ What data are you using?
 
 How are you using this data to address the problem?
 
+log(DN) * 1.0484 + (Vit - 6.1871)
+
 ### Interface
 
 How does your application's interface work to address the needs of your end user?
