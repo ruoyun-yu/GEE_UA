@@ -1,45 +1,160 @@
+# 
+
+---
+title: "CASA0025 项目"  
+author: "Zixing Guan, Ruoyun Yu, Siyi Li"  
+date: "2025-04-25"  
+bibliography: 25references.bib  
+format: html  
+---
+
 # CASA00025 Group Project Title Here
 
-## Project Summary 
+## Project Summary
 
-Fill in the sections below to provide a brief summary of your project. Each section should have no more than 100 words. Do not edit any of the headings.
+The aim of this project is to develop an application to compare the gap between building carbon emissions and vegetation carbon absorption in China's five major urban agglomerations. This application can not only provide data support and decision-making references for China to achieve its 2060 “carbon neutrality” goal, but also assist researchers around the world in addressing global warming.
 
-### Problem Statement 
+### Problem Statement
 
-What is the problem you’re trying to address using this application? 
+The negative impact of global warming on the world continues to intensify [@Ahmad2022]. Since 2005, China has become the world's largest carbon emitter [@Zuo2022]. In response to this situation, China has proposed the goal of achieving "carbon neutrality" by 2060 [@Yang2022], which can be achieved through various strategies, including social and natural contributions. Among them, natural contributions mainly involve the carbon sequestration capacity of plant ecosystems [@AlKafy2023]. However, natural contributions alone cannot completely offset the CO2 produced, and social support is needed to bridge the gap between carbon emissions and carbon absorption [@Wu2022]. In addition, as high-risk areas for ecological and environmental issues [@Liu2018], urban agglomerations are important responsible entities for achieving the above goals. As a result, the developed application aims to provide a visualization tool for quantifying the gap in “carbon neutrality” process, thereby providing a reference for the social contribution required to achieve “carbon neutrality”.
 
-### End User 
+### End User
 
-Who are you building this application for? How does it address a need this community has?
+This application is aimed at diverse user groups worldwide, including policy makers (e.g. environmental management officials), environmental researchers, corporate sustainability leaders, environmental non-governmental organizations, as well as investors and financial institutions (e.g. carbon finance product developers). These user groups collectively face an urgent need for accurate assessment of carbon emissions and absorption in urban agglomerations, requiring precise and visualized data to support their policy-making, academic research, corporate strategy, public education, and investment decisions. By providing detailed carbon balance analysis of urban agglomerations in China, this application can become a scientific and intuitive decision-making tool for professionals in different fields.
 
 ### Data
 
-What data are you using? 
+Considering the high correlation between energy consumption and carbon emissions, nighttime light (NTL) data can be used to estimate the spatial distribution of carbon emissions [@Wang2024]. This project obtained the latest generation of nighttime light data NPP-VIIRS through GEE.
+
+The carbon sequestration capacity of plant ecosystems has been proven to be an important force in reducing atmospheric carbon dioxide accumulation and mitigating climate change [@Legesse2024], so the net primary productivity (NPP) index of vegetation can serve as a proxy indicator for carbon absorption capacity [@Das2023]. The dataset for estimating carbon absorption obtained through GEE is shown in the table below. Considering the availability of NPP-VIIRS data, the comprehensive time span of the above types of data is from January 1, 2014 to December 31, 2023. Furthermore, the geographical boundary data of urban agglomerations is GADM data (version 4.1) [@gadm2022].
+
++------------------------------------------------------+-------------------------------+-----------+
+| Indicator                                            | Dataset                       | Time Span |
++======================================================+===============================+===========+
+| Net primary productivity index (NDVI)                | MODIS/061/MOD13A2             | 2014-2023 |
++------------------------------------------------------+-------------------------------+-----------+
+| Evaporation and transpiration capacity               | MODIS/061/MOD16A2GF           | 2014-2020 |
++------------------------------------------------------+-------------------------------+-----------+
+| Evaporation and transpiration capacity               | MODIS/061/MOD16A2             | 2021-2023 |
++------------------------------------------------------+-------------------------------+-----------+
+| Precipitation, temperature, and short radiation data | NASA/FLDAS/NOAH01/C/GL/M/V001 | 2014-2023 |
++------------------------------------------------------+-------------------------------+-----------+
 
 ### Methodology
 
-How are you using this data to address the problem?
+After data preprocessing, the main step is to estimate the specific carbon emissions and carbon absorption, and calculate the difference between the two, which is represented by the total amount of carbon dioxide.
 
-log(DN) * 1.0484 + (Vit - 6.1871)
+The estimation method of carbon emissions is improved based on the existing model [@yang2022] by considering the impact of urban area. Firstly, the monthly average NTL data (per pixel, with a pixel size of 500 \* 500m) of cities within the five major urban agglomerations were obtained using the NPP-VIIRS datasets. Afterwards, use the following formula to calculate the total NTL intensity for each city.
+
+$$
+  NTL_{total} = \left(\frac{NTL_{pixel}}{250,000}\right) \times A_{city}  
+$$
+
+where,
+
+$NTL_{total}$: the total NTL intensity of the city;
+
+$NTL_{pixel}$: the monthly average nighttime light data for each pixel;
+
+$A_{city}$: the area of the city in square meters.
+
+Next, based on the region where the city is located (eastern/central/western), different linear transformation formulas (as shown in the table below) will be used to calculate the total carbon emissions of the city.
+
++------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| **Region** | **Province**                                                    | **Formula**                                                        |
++------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| Western    | Sichuan, Chongqing                                              | $$   NC = \log(NTL_{total}) \times 0.3645 + (V_{it} + 2.2189)   $$ |
++------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| Central    | Anhui; Hubei, Hunan, Jiangxi                                    | $$   NC = \log(NTL_{total}) \times 1.0484 + (V_{it} - 6.1871)   $$ |
++------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| Eastern    | Beijing, Tianjin, Hebei; Shanghai, Jiangsu, Zhejiang; Guangdong | $$   NC = \log(NTL_{total}) \times 0.8773 + (V_{it} - 4.2414)   $$ |
++------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+
+where,
+
+$NC$: carbon emission amount;
+
+$NTL_{total}$: the total NTL intensity of the city;
+
+$V_{it}$: fixed impact value (see the table below).
+
++----------------------------+------------------------------+--------------------+
+| Region                     | Province                     | Vit                |
++============================+==============================+====================+
+| Western                    | Sichuan                      | 0.4006             |
++----------------------------+------------------------------+--------------------+
+|                            | Chongqing                    | -0.0131            |
++----------------------------+------------------------------+--------------------+
+| Central                    | Anhui; Hubei, Hunan, Jiangxi | /                  |
++----------------------------+------------------------------+--------------------+
+| Eastern                    | Beijing                      | 1.2970             |
++----------------------------+------------------------------+--------------------+
+|                            | Tianjin                      | 0.7509             |
++----------------------------+------------------------------+--------------------+
+|                            | Hebei                        | -0.2134            |
++----------------------------+------------------------------+--------------------+
+|                            | Shanghai                     | 1.0254             |
++----------------------------+------------------------------+--------------------+
+|                            | Jiangsu                      | -0.6130            |
++----------------------------+------------------------------+--------------------+
+|                            | Zhejiang                     | -0.4030            |
++----------------------------+------------------------------+--------------------+
+|                            | Guangdong                    | -0.3258            |
++----------------------------+------------------------------+--------------------+
+
+As for carbon absorption, this project refers to The Carnegie-Ames-Stanford approach (CASA) Biosphere model [@Potter1993]. The calculation method is based on the carbon absorption related datasets obtained from the GEE platform to estimate carbon absorption. The calculation formula for NPP is as follows.
+
+$$npp=par\times fpar\times\epsilon$$
+
+where,
+
++-------------------------------------------------------------+---------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
+| Parameter                                                   | Formula                                                                               | Explanation                                                                      |
++=============================================================+=======================================================================================+==================================================================================+
+| PAR (Photosynthetically Active Radiation)                   | $$   PAR = Swnet\_tavg \times 0.5 \times \left(\frac{30\,\text{days}}{106}\right)  $$ | where,                                                                           |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             |                                                                                       | $Swnet\_tavg$: The average value of shortwave net radiation;                     |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             |                                                                                       | $0.5$: Proportion of photosynthetically active radiation in shortwave radiation; |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             |                                                                                       | Convert the results to a monthly scale.                                          |
++-------------------------------------------------------------+---------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
+| FPAR (Photosynthetically Active Radiation Absorption Ratio) | $$  FPAR = \frac{SR - SR_{min}}{SR_{max} - SR_{min}}  $$                              | where,                                                                           |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             | $$     SR = \frac{NDVI + 1}{1 - NDVI}     $$                                          | $SR$: Reflectance;                                                               |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             |                                                                                       | $NDVI$: the Normalized Difference Vegetation Index;                              |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             |                                                                                       | $SR_{max}$ and $SR_{min}$: The minimum and maximum values of $SR$.               |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             |                                                                                       | The value of $FPAR$ is restricted between 0 and 0.95.                            |
++-------------------------------------------------------------+---------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
+| $epsilon$ (Energy Conversion Efficiency)                    | $$\epsilon = Te1 \times Te2 \times WE \times 0.95 $$                                  | where,                                                                           |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             | $$   Te1 = 0.8 + 0.027T - 0.00005T^2   $$                                             | $T$: Temperature (typically in °C);                                              |
+|                                                             |                                                                                       |                                                                                  |
+|                                                             | $$ Te2 = \frac{1.184}{1 + e^{-0.2(T-10)} + e^{0.3(T+10)}} $$                          | $WE$: Water Use Efficiency.                                                      |
++-------------------------------------------------------------+---------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
 
 ### Interface
 
 How does your application's interface work to address the needs of your end user?
 
-## The Application 
+## The Application
 
 Replace the link below with the link to your application.
 
-:::{.column-page}
+::: column-page
+<iframe src="https://ruoyun2025.projects.earthengine.app/view/text1" width="100%" height="700px">
 
-<iframe src='https://ollielballinger.users.earthengine.app/view/turkey-earthquake' width='100%' height='700px'></iframe>
-
+</iframe>
 :::
-## How it Works 
+
+## How it Works
 
 Use this section to explain how your application works using code blocks and text explanations (no more than 500 words excluding code):
 
-```js
+``` js
 Map.setCenter(35.51898, 33.90153, 15);
 
 Map.setOptions("satellite");
@@ -51,7 +166,6 @@ You can include images:
 
 ![Pixelwise T-Test, 2018](images/beirut_change_2020.jpg)
 
-and math:
-$$ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} $$
+and math: $$ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} $$
 
-
+## Bibliography

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Zixing Guan, Ruoyun Yu, Siyi Li">
+<meta name="dcterms.date" content="2025-04-25">
 
-<title>index</title>
+<title>CASA0025 项目</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -55,7 +57,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -304,33 +326,254 @@ window.Quarto = {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">CASA0025 项目</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Zixing Guan, Ruoyun Yu, Siyi Li </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2025-04-25</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
+
+
+<section id="section" class="level1">
+<h1></h1>
+</section>
 <section id="casa00025-group-project-title-here" class="level1 page-columns page-full">
 <h1>CASA00025 Group Project Title Here</h1>
 <section id="project-summary" class="level2">
 <h2 class="anchored" data-anchor-id="project-summary">Project Summary</h2>
-<p>Fill in the sections below to provide a brief summary of your project. Each section should have no more than 100 words. Do not edit any of the headings.</p>
+<p>The aim of this project is to develop an application to compare the gap between building carbon emissions and vegetation carbon absorption in China’s five major urban agglomerations. This application can not only provide data support and decision-making references for China to achieve its 2060 “carbon neutrality” goal, but also assist researchers around the world in addressing global warming.</p>
 <section id="problem-statement" class="level3">
 <h3 class="anchored" data-anchor-id="problem-statement">Problem Statement</h3>
-<p>What is the problem you’re trying to address using this application?</p>
+<p>The negative impact of global warming on the world continues to intensify <span class="citation" data-cites="Ahmad2022">(<a href="#ref-Ahmad2022" role="doc-biblioref">Ahmad et al. 2022</a>)</span>. Since 2005, China has become the world’s largest carbon emitter <span class="citation" data-cites="Zuo2022">(<a href="#ref-Zuo2022" role="doc-biblioref">Zuo et al. 2022</a>)</span>. In response to this situation, China has proposed the goal of achieving “carbon neutrality” by 2060 <span class="citation" data-cites="Yang2022">(<a href="#ref-Yang2022" role="doc-biblioref">J. Yang et al. 2022</a>)</span>, which can be achieved through various strategies, including social and natural contributions. Among them, natural contributions mainly involve the carbon sequestration capacity of plant ecosystems <span class="citation" data-cites="AlKafy2023">(<a href="#ref-AlKafy2023" role="doc-biblioref">Al Kafy et al. 2023</a>)</span>. However, natural contributions alone cannot completely offset the CO2 produced, and social support is needed to bridge the gap between carbon emissions and carbon absorption <span class="citation" data-cites="Wu2022">(<a href="#ref-Wu2022" role="doc-biblioref">Wu, Tian, and Guo 2022</a>)</span>. In addition, as high-risk areas for ecological and environmental issues <span class="citation" data-cites="Liu2018">(<a href="#ref-Liu2018" role="doc-biblioref">Liu et al. 2018</a>)</span>, urban agglomerations are important responsible entities for achieving the above goals. As a result, the developed application aims to provide a visualization tool for quantifying the gap in “carbon neutrality” process, thereby providing a reference for the social contribution required to achieve “carbon neutrality”.</p>
 </section>
 <section id="end-user" class="level3">
 <h3 class="anchored" data-anchor-id="end-user">End User</h3>
-<p>Who are you building this application for? How does it address a need this community has?</p>
+<p>This application is aimed at diverse user groups worldwide, including policy makers (e.g.&nbsp;environmental management officials), environmental researchers, corporate sustainability leaders, environmental non-governmental organizations, as well as investors and financial institutions (e.g.&nbsp;carbon finance product developers). These user groups collectively face an urgent need for accurate assessment of carbon emissions and absorption in urban agglomerations, requiring precise and visualized data to support their policy-making, academic research, corporate strategy, public education, and investment decisions. By providing detailed carbon balance analysis of urban agglomerations in China, this application can become a scientific and intuitive decision-making tool for professionals in different fields.</p>
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<p>What data are you using?</p>
+<p>Considering the high correlation between energy consumption and carbon emissions, nighttime light (NTL) data can be used to estimate the spatial distribution of carbon emissions <span class="citation" data-cites="Wang2024">(<a href="#ref-Wang2024" role="doc-biblioref">Wang et al. 2024</a>)</span>. This project obtained the latest generation of nighttime light data NPP-VIIRS through GEE.</p>
+<p>The carbon sequestration capacity of plant ecosystems has been proven to be an important force in reducing atmospheric carbon dioxide accumulation and mitigating climate change <span class="citation" data-cites="Legesse2024">(<a href="#ref-Legesse2024" role="doc-biblioref">Legesse, Degefa, and Soromessa 2024</a>)</span>, so the net primary productivity (NPP) index of vegetation can serve as a proxy indicator for carbon absorption capacity <span class="citation" data-cites="Das2023">(<a href="#ref-Das2023" role="doc-biblioref">Das et al. 2023</a>)</span>. The dataset for estimating carbon absorption obtained through GEE is shown in the table below. Considering the availability of NPP-VIIRS data, the comprehensive time span of the above types of data is from January 1, 2014 to December 31, 2023. Furthermore, the geographical boundary data of urban agglomerations is GADM data (version 4.1) <span class="citation" data-cites="gadm2022">(<a href="#ref-gadm2022" role="doc-biblioref"><span>“GADM: Global Administrative Areas”</span> 2022</a>)</span>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 55%">
+<col style="width: 32%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Indicator</th>
+<th>Dataset</th>
+<th>Time Span</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Net primary productivity index (NDVI)</td>
+<td>MODIS/061/MOD13A2</td>
+<td>2014-2023</td>
+</tr>
+<tr class="even">
+<td>Evaporation and transpiration capacity</td>
+<td>MODIS/061/MOD16A2GF</td>
+<td>2014-2020</td>
+</tr>
+<tr class="odd">
+<td>Evaporation and transpiration capacity</td>
+<td>MODIS/061/MOD16A2</td>
+<td>2021-2023</td>
+</tr>
+<tr class="even">
+<td>Precipitation, temperature, and short radiation data</td>
+<td>NASA/FLDAS/NOAH01/C/GL/M/V001</td>
+<td>2014-2023</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="methodology" class="level3">
 <h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
-<p>How are you using this data to address the problem?</p>
-<p>log(DN) * 1.0484 + (Vit - 6.1871)</p>
+<p>After data preprocessing, the main step is to estimate the specific carbon emissions and carbon absorption, and calculate the difference between the two, which is represented by the total amount of carbon dioxide.</p>
+<p>The estimation method of carbon emissions is improved based on the existing model <span class="citation" data-cites="yang2022">(<a href="#ref-yang2022" role="doc-biblioref">T. Yang et al. 2022</a>)</span> by considering the impact of urban area. Firstly, the monthly average NTL data (per pixel, with a pixel size of 500 * 500m) of cities within the five major urban agglomerations were obtained using the NPP-VIIRS datasets. Afterwards, use the following formula to calculate the total NTL intensity for each city.</p>
+<p><span class="math display">\[
+  NTL_{total} = \left(\frac{NTL_{pixel}}{250,000}\right) \times A_{city}  
+\]</span></p>
+<p>where,</p>
+<p><span class="math inline">\(NTL_{total}\)</span>: the total NTL intensity of the city;</p>
+<p><span class="math inline">\(NTL_{pixel}\)</span>: the monthly average nighttime light data for each pixel;</p>
+<p><span class="math inline">\(A_{city}\)</span>: the area of the city in square meters.</p>
+<p>Next, based on the region where the city is located (eastern/central/western), different linear transformation formulas (as shown in the table below) will be used to calculate the total carbon emissions of the city.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 44%">
+<col style="width: 46%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Region</strong></td>
+<td><strong>Province</strong></td>
+<td><strong>Formula</strong></td>
+</tr>
+<tr class="even">
+<td>Western</td>
+<td>Sichuan, Chongqing</td>
+<td><span class="math display">\[   NC = \log(NTL_{total}) \times 0.3645 + (V_{it} + 2.2189)   \]</span></td>
+</tr>
+<tr class="odd">
+<td>Central</td>
+<td>Anhui; Hubei, Hunan, Jiangxi</td>
+<td><span class="math display">\[   NC = \log(NTL_{total}) \times 1.0484 + (V_{it} - 6.1871)   \]</span></td>
+</tr>
+<tr class="even">
+<td>Eastern</td>
+<td>Beijing, Tianjin, Hebei; Shanghai, Jiangsu, Zhejiang; Guangdong</td>
+<td><span class="math display">\[   NC = \log(NTL_{total}) \times 0.8773 + (V_{it} - 4.2414)   \]</span></td>
+</tr>
+</tbody>
+</table>
+<p>where,</p>
+<p><span class="math inline">\(NC\)</span>: carbon emission amount;</p>
+<p><span class="math inline">\(NTL_{total}\)</span>: the total NTL intensity of the city;</p>
+<p><span class="math inline">\(V_{it}\)</span>: fixed impact value (see the table below).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 37%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Region</th>
+<th>Province</th>
+<th>Vit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Western</td>
+<td>Sichuan</td>
+<td>0.4006</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Chongqing</td>
+<td>-0.0131</td>
+</tr>
+<tr class="odd">
+<td>Central</td>
+<td>Anhui; Hubei, Hunan, Jiangxi</td>
+<td>/</td>
+</tr>
+<tr class="even">
+<td>Eastern</td>
+<td>Beijing</td>
+<td>1.2970</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Tianjin</td>
+<td>0.7509</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Hebei</td>
+<td>-0.2134</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Shanghai</td>
+<td>1.0254</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Jiangsu</td>
+<td>-0.6130</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Zhejiang</td>
+<td>-0.4030</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Guangdong</td>
+<td>-0.3258</td>
+</tr>
+</tbody>
+</table>
+<p>As for carbon absorption, this project refers to The Carnegie-Ames-Stanford approach (CASA) Biosphere model <span class="citation" data-cites="Potter1993">(<a href="#ref-Potter1993" role="doc-biblioref">Potter et al. 1993</a>)</span>. The calculation method is based on the carbon absorption related datasets obtained from the GEE platform to estimate carbon absorption. The calculation formula for NPP is as follows.</p>
+<p><span class="math display">\[npp=par\times fpar\times\epsilon\]</span></p>
+<p>where,</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 37%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Formula</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PAR (Photosynthetically Active Radiation)</td>
+<td><span class="math display">\[   PAR = Swnet\_tavg \times 0.5 \times \left(\frac{30\,\text{days}}{106}\right)  \]</span></td>
+<td><p>where,</p>
+<p><span class="math inline">\(Swnet\_tavg\)</span>: The average value of shortwave net radiation;</p>
+<p><span class="math inline">\(0.5\)</span>: Proportion of photosynthetically active radiation in shortwave radiation;</p>
+<p>Convert the results to a monthly scale.</p></td>
+</tr>
+<tr class="even">
+<td>FPAR (Photosynthetically Active Radiation Absorption Ratio)</td>
+<td><p><span class="math display">\[  FPAR = \frac{SR - SR_{min}}{SR_{max} - SR_{min}}  \]</span></p>
+<p><span class="math display">\[     SR = \frac{NDVI + 1}{1 - NDVI}     \]</span></p></td>
+<td><p>where,</p>
+<p><span class="math inline">\(SR\)</span>: Reflectance;</p>
+<p><span class="math inline">\(NDVI\)</span>: the Normalized Difference Vegetation Index;</p>
+<p><span class="math inline">\(SR_{max}\)</span> and <span class="math inline">\(SR_{min}\)</span>: The minimum and maximum values of <span class="math inline">\(SR\)</span>.</p>
+<p>The value of <span class="math inline">\(FPAR\)</span> is restricted between 0 and 0.95.</p></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(epsilon\)</span> (Energy Conversion Efficiency)</td>
+<td><p><span class="math display">\[\epsilon = Te1 \times Te2 \times WE \times 0.95 \]</span></p>
+<p><span class="math display">\[   Te1 = 0.8 + 0.027T - 0.00005T^2   \]</span></p>
+<p><span class="math display">\[ Te2 = \frac{1.184}{1 + e^{-0.2(T-10)} + e^{0.3(T+10)}} \]</span></p></td>
+<td><p>where,</p>
+<p><span class="math inline">\(T\)</span>: Temperature (typically in °C);</p>
+<p><span class="math inline">\(WE\)</span>: Water Use Efficiency.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="interface" class="level3">
 <h3 class="anchored" data-anchor-id="interface">Interface</h3>
@@ -341,7 +584,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-application">The Application</h2>
 <p>Replace the link below with the link to your application.</p>
 <div class="column-page">
-<iframe src="https://ollielballinger.users.earthengine.app/view/turkey-earthquake" width="100%" height="700px">
+<iframe src="https://ruoyun2025.projects.earthengine.app/view/text1" width="100%" height="700px">
 </iframe>
 </div>
 </section>
@@ -361,8 +604,49 @@ window.Quarto = {
 </figure>
 </div>
 <p>and math: <span class="math display">\[ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} \]</span></p>
+</section>
+<section id="bibliography" class="level2">
+<h2 class="anchored" data-anchor-id="bibliography">Bibliography</h2>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Ahmad2022" class="csl-entry" role="listitem">
+Ahmad, Adnan, Shahid Ahmad, Ghulam Nabi, Qi-Jing Liu, Nazirul Islam, and Xiaofeng Luan. 2022. <span>“Trends in Deforestation as a Response to Management Regimes and Policy Intervention in the Hindu Kush Himalaya of Pakistan.”</span> <em>Frontiers in Environmental Science</em> 10. <a href="https://doi.org/10.3389/fenvs.2022.810806">https://doi.org/10.3389/fenvs.2022.810806</a>.
+</div>
+<div id="ref-AlKafy2023" class="csl-entry" role="listitem">
+Al Kafy, Abdulla -, Milan Saha, Md. Abdul Fattah, Muhammad Tauhidur Rahman, Bushra Monowar Duti, Zullyadini A. Rahaman, Arpita Bakshi, S. Kalaivani, Sk Nafiz Rahaman, and Golam Shabbir Sattar. 2023. <span>“Integrating Forest Cover Change and Carbon Storage Dynamics: Leveraging Google Earth Engine and InVEST Model to Inform Conservation in Hilly Regions.”</span> <em>Ecological Indicators</em> 152: 110374. https://doi.org/<a href="https://doi.org/10.1016/j.ecolind.2023.110374">https://doi.org/10.1016/j.ecolind.2023.110374</a>.
+</div>
+<div id="ref-Das2023" class="csl-entry" role="listitem">
+Das, Manob, Ashis Mandal, Arijit Das, Miguel Inácio, and Paulo Pereira. 2023. <span>“Mapping and Assessment of Carbon Sequestration Potential and Its Drivers in the Eastern Himalayan Region (India).”</span> <em>Case Studies in Chemical and Environmental Engineering</em> 7: 100344. https://doi.org/<a href="https://doi.org/10.1016/j.cscee.2023.100344">https://doi.org/10.1016/j.cscee.2023.100344</a>.
+</div>
+<div id="ref-gadm2022" class="csl-entry" role="listitem">
+<span>“GADM: Global Administrative Areas.”</span> 2022. <a href="https://gadm.org/index.html">https://gadm.org/index.html</a>.
+</div>
+<div id="ref-Legesse2024" class="csl-entry" role="listitem">
+Legesse, F., S. Degefa, and T. Soromessa. 2024. <span>“Estimating Carbon Stock Using Vegetation Indices and Empirical Data in the Upper Awash River Basin.”</span> <em>Discover Environment</em> 2: 137. <a href="https://doi.org/10.1007/s44274-024-00165-8">https://doi.org/10.1007/s44274-024-00165-8</a>.
+</div>
+<div id="ref-Liu2018" class="csl-entry" role="listitem">
+Liu, Xiaoping, Jinpei Ou, Shaojian Wang, Xia Li, Yuchao Yan, Limin Jiao, and Yaolin Liu. 2018. <span>“Estimating Spatiotemporal Variations of City-Level Energy-Related CO2 Emissions: An Improved Disaggregating Model Based on Vegetation Adjusted Nighttime Light Data.”</span> <em>Journal of Cleaner Production</em> 177: 101–14. https://doi.org/<a href="https://doi.org/10.1016/j.jclepro.2017.12.197">https://doi.org/10.1016/j.jclepro.2017.12.197</a>.
+</div>
+<div id="ref-Potter1993" class="csl-entry" role="listitem">
+Potter, C. S., J. T. Randerson, C. B. Field, P. A. Matson, P. M. Vitousek, H. A. Mooney, and S. A. Klooster. 1993. <span>“Terrestrial Ecosystem Production: A Process Model Based on Global Satellite and Surface Data.”</span> <em>Global Biogeochemical Cycles</em> 7 (4): 811–41. <a href="https://doi.org/10.1029/93GB02725">https://doi.org/10.1029/93GB02725</a>.
+</div>
+<div id="ref-Wang2024" class="csl-entry" role="listitem">
+Wang, Gengzhe, Qing Hu, Linghao He, Jialong Guo, Jin Huang, and Lijin Zhong. 2024. <span>“The Estimation of Building Carbon Emission Using Nighttime Light Images: A Comparative Study at Various Spatial Scales.”</span> <em>Sustainable Cities and Society</em> 101: 105066. https://doi.org/<a href="https://doi.org/10.1016/j.scs.2023.105066">https://doi.org/10.1016/j.scs.2023.105066</a>.
+</div>
+<div id="ref-Wu2022" class="csl-entry" role="listitem">
+Wu, Xianhua, Zhiqing Tian, and Ji Guo. 2022. <span>“A Review of the Theoretical Research and Practical Progress of Carbon Neutrality.”</span> <em>Sustainable Operations and Computers</em> 3: 54–66. https://doi.org/<a href="https://doi.org/10.1016/j.susoc.2021.10.001">https://doi.org/10.1016/j.susoc.2021.10.001</a>.
+</div>
+<div id="ref-Yang2022" class="csl-entry" role="listitem">
+Yang, Jie, Wei Li, Jie Chen, and Chao Sun. 2022. <span>“Refined Carbon Emission Measurement Based on NPP-VIIRS Nighttime Light Data: A Case Study of the Pearl River Delta Region, China.”</span> <em>Sensors (Basel)</em> 23 (1): 191. <a href="https://doi.org/10.3390/s23010191">https://doi.org/10.3390/s23010191</a>.
+</div>
+<div id="ref-yang2022" class="csl-entry" role="listitem">
+Yang, Tianjiao, Jing Liu, Haibo Mi, Zhicheng Cao, Yiting Wang, Huichao Han, Jiahui Luan, and Zhaoxuan Wang. 2022. <span>“An Estimating Method for Carbon Emissions of China Based on Nighttime Lights Remote Sensing Satellite Images.”</span> <em>Sustainability</em> 14 (4): 2269. <a href="https://doi.org/10.3390/su14042269">https://doi.org/10.3390/su14042269</a>.
+</div>
+<div id="ref-Zuo2022" class="csl-entry" role="listitem">
+Zuo, Chen, Wei Gong, Zhiyu Gao, Deyi Kong, Ruyi Wei, and Xin Ma. 2022. <span>“Correlation Analysis of CO2 Concentration Based on DMSP-OLS and NPP-VIIRS Integrated Data.”</span> <em>Remote Sensing</em> 14 (17): 4181. <a href="https://doi.org/10.3390/rs14174181">https://doi.org/10.3390/rs14174181</a>.
+</div>
+</div>
 </section>
 </section>
 
