@@ -1,4 +1,4 @@
-﻿P,C,system:index,province,city,lat,lon,region,Urban Agglomerations,i,t,Year,Vit
+﻿P,C,system:index,province,city,lat,lon,region,UrbanAgg,i,t,Year,Vit
 913011,3220387,00000000000000000000,Anhui,Anqing,30.61038799,116.5934926,central,Yangtze River Delta,35,1,2014,
 913011,3262334,00000000000000000001,Anhui,Bengbu,33.11191905,117.3271854,central,Yangtze River Delta,30,1,2014,
 913011,3245950,00000000000000000002,Anhui,Bozhou,33.43282595,116.1817954,central,Yangtze River Delta,41,1,2014,
