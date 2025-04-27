@@ -1,14 +1,14 @@
 # 
 
 ---
-title: "CASA0025 项目"  
+title: "CASA0025 Interactive Application"  
 author: "Zixing Guan, Ruoyun Yu, Siyi Li"  
 date: "2025-04-25"  
 bibliography: 25references.bib  
-format: html  
+format: html
 ---
 
-# CASA00025 Group Project Title Here
+# Urban Carbon Archives of China's Five Major Urban Agglomerations
 
 ## Project Summary
 
@@ -16,7 +16,7 @@ The aim of this project is to develop an application to compare the gap between 
 
 ### Problem Statement
 
-The negative impact of global warming on the world continues to intensify [@Ahmad2022]. Since 2005, China has become the world's largest carbon emitter [@Zuo2022]. In response to this situation, China has proposed the goal of achieving "carbon neutrality" by 2060 [@Yang2022], which can be achieved through various strategies, including social and natural contributions. Among them, natural contributions mainly involve the carbon sequestration capacity of plant ecosystems [@AlKafy2023]. However, natural contributions alone cannot completely offset the CO2 produced, and social support is needed to bridge the gap between carbon emissions and carbon absorption [@Wu2022]. In addition, as high-risk areas for ecological and environmental issues [@Liu2018], urban agglomerations are important responsible entities for achieving the above goals. As a result, the developed application aims to provide a visualization tool for quantifying the gap in “carbon neutrality” process, thereby providing a reference for the social contribution required to achieve “carbon neutrality”.
+The negative impact of global warming on the world continues to intensify [@Ahmad2022]. Since 2005, China has become the world's largest carbon emitter [@Zuo2022]. In response to this situation, China has proposed the goal of achieving "carbon neutrality" by 2060 [@Yang2022], which can be achieved through various strategies, including social and natural contributions. Among them, natural contributions mainly involve the carbon sequestration capacity of plant ecosystems [@AlKafy2023]. However, natural contributions alone cannot completely offset the $CO_{2}$ produced, and social support is needed to bridge the gap between carbon emissions and carbon absorption [@Wu2022]. In addition, as high-risk areas for ecological and environmental issues [@Liu2018], urban agglomerations are important responsible entities for achieving the above goals. As a result, the developed application aims to provide a visualization tool for quantifying the gap in “carbon neutrality” process, thereby providing a reference for the social contribution required to achieve “carbon neutrality”.
 
 ### End User
 
@@ -26,85 +26,99 @@ This application is aimed at diverse user groups worldwide, including policy mak
 
 Considering the high correlation between energy consumption and carbon emissions, nighttime light (NTL) data can be used to estimate the spatial distribution of carbon emissions [@Wang2024]. This project obtained the latest generation of nighttime light data NPP-VIIRS through GEE.
 
-The carbon sequestration capacity of plant ecosystems has been proven to be an important force in reducing atmospheric carbon dioxide accumulation and mitigating climate change [@Legesse2024], so the net primary productivity (NPP) index of vegetation can serve as a proxy indicator for carbon absorption capacity [@Das2023]. The dataset for estimating carbon absorption obtained through GEE is shown in the table below. Considering the availability of NPP-VIIRS data, the comprehensive time span of the above types of data is from January 1, 2014 to December 31, 2023. Furthermore, the geographical boundary data of urban agglomerations is GADM data (version 4.1) [@gadm2022].
+The carbon sequestration capacity of plant ecosystems has been proven to be an important force in reducing atmospheric carbon dioxide accumulation and mitigating climate change [@Legesse2024], so the net primary productivity (NPP) index of vegetation can serve as a proxy indicator for carbon absorption capacity [@Das2023]. The dataset for estimating carbon absorption obtained through GEE is shown in the table below. Considering the availability of NPP-VIIRS data, the comprehensive time span of the above types of data is from January 1, 2015 to December 31, 2023. Furthermore, the geographical boundary data of urban agglomerations is GADM data (version 4.1) [@gadm2022], and the population data is also obtained through the GEE platform.
 
-+------------------------------------------------------+-------------------------------+-----------+
-| Indicator                                            | Dataset                       | Time Span |
-+======================================================+===============================+===========+
-| Net primary productivity index (NDVI)                | MODIS/061/MOD13A2             | 2014-2023 |
-+------------------------------------------------------+-------------------------------+-----------+
-| Evaporation and transpiration capacity               | MODIS/061/MOD16A2GF           | 2014-2020 |
-+------------------------------------------------------+-------------------------------+-----------+
-| Evaporation and transpiration capacity               | MODIS/061/MOD16A2             | 2021-2023 |
-+------------------------------------------------------+-------------------------------+-----------+
-| Precipitation, temperature, and short radiation data | NASA/FLDAS/NOAH01/C/GL/M/V001 | 2014-2023 |
-+------------------------------------------------------+-------------------------------+-----------+
++------------------------------------------------------+-------------------------------+--------------+
+| Indicator                                            | Dataset                       | Time Span    |
++======================================================+===============================+==============+
+| Net primary productivity index (NDVI)                | MODIS/061/MOD13A2             | 2015-2023    |
++------------------------------------------------------+-------------------------------+--------------+
+| Evaporation and transpiration capacity               | MODIS/061/MOD16A2GF           | 2015-2020    |
++------------------------------------------------------+-------------------------------+--------------+
+| Evaporation and transpiration capacity               | MODIS/061/MOD16A2             | 2021-2023    |
++------------------------------------------------------+-------------------------------+--------------+
+| Precipitation, temperature, and short radiation data | NASA/FLDAS/NOAH01/C/GL/M/V001 | 2015-2023    |
++------------------------------------------------------+-------------------------------+--------------+
 
-### Methodology
+## Methodology
+
+#### Data preprocessing
+
+In general, the raw data has been standardized and preprocessed through spatial cropping, missing value filling and smoothing, mask unification, and outlier processing, providing a high-quality data foundation for subsequent estimation of carbon emissions and carbon sequestration at the city scale and analysis of temporal changes.
 
 After data preprocessing, the main step is to estimate the specific carbon emissions and carbon absorption, and calculate the difference between the two, which is represented by the total amount of carbon dioxide.
 
-The estimation method of carbon emissions is improved based on the existing model [@yang2022] by considering the impact of urban area. Firstly, the monthly average NTL data (per pixel, with a pixel size of 500 \* 500m) of cities within the five major urban agglomerations were obtained using the NPP-VIIRS datasets. Afterwards, use the following formula to calculate the total NTL intensity for each city.
+#### Carbon emissions
+
+The estimation method of carbon emissions is improved based on the existing model [@yang2022] by considering the impact of urban area. Firstly, monthly average NTL data ($nW/pixel$) of cities within five major urban agglomerations were obtained using the NPP-VIIRS dataset. Then, based on converting the NTL data into $nW$ per m², calculate the total NTL intensity ($nW$) for each city using the following formula.
 
 $$
-  NTL_{total} = \left(\frac{NTL_{pixel}}{250,000}\right) \times A_{city}  
+NTL_{\text{m²}} = \frac{NTL_{\text{pixel}}}{10^4} \times \pi
+$$
+
+$$
+  NTL_{total} = NTL_{m^2} \times A_{city}  
 $$
 
 where,
 
-$NTL_{total}$: the total NTL intensity of the city;
+$NTL_{total}$: the total NTL intensity of the city (nW);
 
-$NTL_{pixel}$: the monthly average nighttime light data for each pixel;
+$NTL_{pixel}$: the monthly average nighttime light data for each pixel (nW/cm²/sr);
 
-$A_{city}$: the area of the city in square meters.
+$NTL_{m^2}$: : the monthly average nighttime light data for each m\^2 (nW/m²);
+
+$A_{city}$: the area of the city (m²).
 
 Next, based on the region where the city is located (eastern/central/western), different linear transformation formulas (as shown in the table below) will be used to calculate the total carbon emissions of the city.
 
-+------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
-| **Region** | **Province**                                                    | **Formula**                                                        |
-+------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
-| Western    | Sichuan, Chongqing                                              | $$   NC = \log(NTL_{total}) \times 0.3645 + (V_{it} + 2.2189)   $$ |
-+------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
-| Central    | Anhui; Hubei, Hunan, Jiangxi                                    | $$   NC = \log(NTL_{total}) \times 1.0484 + (V_{it} - 6.1871)   $$ |
-+------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
-| Eastern    | Beijing, Tianjin, Hebei; Shanghai, Jiangsu, Zhejiang; Guangdong | $$   NC = \log(NTL_{total}) \times 0.8773 + (V_{it} - 4.2414)   $$ |
-+------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
++-------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| **Region**  | **Province**                                                    | **Formula**                                                        |
++-------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| Western     | Sichuan, Chongqing                                              | $$   NC = \log(NTL_{total}) \times 0.3645 + (V_{it} + 2.2189)   $$ |
++-------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| Central     | Anhui; Hubei, Hunan, Jiangxi                                    | $$   NC = \log(NTL_{total}) \times 1.0484 + (V_{it} - 6.1871)   $$ |
++-------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
+| Eastern     | Beijing, Tianjin, Hebei; Shanghai, Jiangsu, Zhejiang; Guangdong | $$   NC = \log(NTL_{total}) \times 0.8773 + (V_{it} - 4.2414)   $$ |
++-------------+-----------------------------------------------------------------+--------------------------------------------------------------------+
 
 where,
 
-$NC$: carbon emission amount;
+$NC$: $CO_{2}$ emission amount (10k tons);
 
-$NTL_{total}$: the total NTL intensity of the city;
+$NTL_{total}$: the total NTL intensity of the city (nW);
 
 $V_{it}$: fixed impact value (see the table below).
 
-+----------------------------+------------------------------+--------------------+
-| Region                     | Province                     | Vit                |
-+============================+==============================+====================+
-| Western                    | Sichuan                      | 0.4006             |
-+----------------------------+------------------------------+--------------------+
-|                            | Chongqing                    | -0.0131            |
-+----------------------------+------------------------------+--------------------+
-| Central                    | Anhui; Hubei, Hunan, Jiangxi | /                  |
-+----------------------------+------------------------------+--------------------+
-| Eastern                    | Beijing                      | 1.2970             |
-+----------------------------+------------------------------+--------------------+
-|                            | Tianjin                      | 0.7509             |
-+----------------------------+------------------------------+--------------------+
-|                            | Hebei                        | -0.2134            |
-+----------------------------+------------------------------+--------------------+
-|                            | Shanghai                     | 1.0254             |
-+----------------------------+------------------------------+--------------------+
-|                            | Jiangsu                      | -0.6130            |
-+----------------------------+------------------------------+--------------------+
-|                            | Zhejiang                     | -0.4030            |
-+----------------------------+------------------------------+--------------------+
-|                            | Guangdong                    | -0.3258            |
-+----------------------------+------------------------------+--------------------+
++----------------+------------------------------+----------------+
+| Region         | Province                     | Vit            |
++================+==============================+================+
+| Western        | Sichuan                      | 0.4006         |
++----------------+------------------------------+----------------+
+|                | Chongqing                    | -0.0131        |
++----------------+------------------------------+----------------+
+| Central        | Anhui; Hubei, Hunan, Jiangxi | /              |
++----------------+------------------------------+----------------+
+| Eastern        | Beijing                      | 1.2970         |
++----------------+------------------------------+----------------+
+|                | Tianjin                      | 0.7509         |
++----------------+------------------------------+----------------+
+|                | Hebei                        | -0.2134        |
++----------------+------------------------------+----------------+
+|                | Shanghai                     | 1.0254         |
++----------------+------------------------------+----------------+
+|                | Jiangsu                      | -0.6130        |
++----------------+------------------------------+----------------+
+|                | Zhejiang                     | -0.4030        |
++----------------+------------------------------+----------------+
+|                | Guangdong                    | -0.3258        |
++----------------+------------------------------+----------------+
 
-As for carbon absorption, this project refers to The Carnegie-Ames-Stanford approach (CASA) Biosphere model [@Potter1993]. The calculation method is based on the carbon absorption related datasets obtained from the GEE platform to estimate carbon absorption. The calculation formula for NPP is as follows.
+#### Carbon sequestration
 
-$$npp=par\times fpar\times\epsilon$$
+As for carbon sequestration, this project refers to The Carnegie-Ames-Stanford approach (CASA) Biosphere model [@Potter1993]. The calculation method is based on the carbon absorption related datasets obtained from the GEE platform to estimate carbon absorption. The calculation formula for NPP is as follows.
+
+$$NPP=PAR\times FPAR\times\epsilon$$
 
 where,
 
@@ -113,7 +127,7 @@ where,
 +=============================================================+=======================================================================================+==================================================================================+
 | PAR (Photosynthetically Active Radiation)                   | $$   PAR = Swnet\_tavg \times 0.5 \times \left(\frac{30\,\text{days}}{106}\right)  $$ | where,                                                                           |
 |                                                             |                                                                                       |                                                                                  |
-|                                                             |                                                                                       | $Swnet\_tavg$: The average value of shortwave net radiation;                     |
+|                                                             |                                                                                       | $Swnet\_tavg$: The average value of shortwave net radiation (MJ$/m^2/month$)     |
 |                                                             |                                                                                       |                                                                                  |
 |                                                             |                                                                                       | $0.5$: Proportion of photosynthetically active radiation in shortwave radiation; |
 |                                                             |                                                                                       |                                                                                  |
@@ -129,43 +143,1651 @@ where,
 |                                                             |                                                                                       |                                                                                  |
 |                                                             |                                                                                       | The value of $FPAR$ is restricted between 0 and 0.95.                            |
 +-------------------------------------------------------------+---------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-| $epsilon$ (Energy Conversion Efficiency)                    | $$\epsilon = Te1 \times Te2 \times WE \times 0.95 $$                                  | where,                                                                           |
+| $\epsilon$ (Energy Conversion Efficiency)                   | $$\epsilon = Te1 \times Te2 \times WE \times 0.95 $$                                  | where,                                                                           |
 |                                                             |                                                                                       |                                                                                  |
 |                                                             | $$   Te1 = 0.8 + 0.027T - 0.00005T^2   $$                                             | $T$: Temperature (typically in °C);                                              |
 |                                                             |                                                                                       |                                                                                  |
 |                                                             | $$ Te2 = \frac{1.184}{1 + e^{-0.2(T-10)} + e^{0.3(T+10)}} $$                          | $WE$: Water Use Efficiency.                                                      |
 +-------------------------------------------------------------+---------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
 
-### Interface
+Because the NPP calculated by the above formula is in units of carbon, it needs to be converted into an amount in units of carbon dioxide using the following formula.
 
-How does your application's interface work to address the needs of your end user?
+$$S_{CO_2}=NPP\times\frac{44}{12}$$
+
+where,
+
+$S_{CO_2}$: Carbon dioxide sequestration capacity of plants (g $CO_{2}$/m²);
+
+$NPP$: Net primary productivity of plants (g $C$/m²);
+
+$\frac{44}{12}$: This is a conversion factor derived from the molecular weight ratio of carbon dioxide (CO₂) to carbon (C).
+
+Finally, the total carbon sequestration amount needs to be obtained by considering the urban area (see formula below).
+
+$$
+TCS=S_{CO_2}\times A_{city}
+$$
+
+where,
+
+$TCS$: total carbon dioxide sequestration amount (10k tons);
+
+$S_{CO_2}$: Carbon dioxide sequestration capacity of plants (g $CO_{2}$/m²);
+
+$A_{city}$: the area of the city (m²).
+
+After calculating the total amount of carbon dioxide emissions and carbon sequestration , the net carbon dioxide emissions can be obtained through the following formula.
+
+$$
+NC_{CO_2}=NC-TCS
+$$
+
+where,
+
+$NC_{CO_2}$: Net $CO_{2}$ emissions (10k tons);
+
+$NC$: $CO_{2}$ emissions (10k tons);
+
+$TCS$: total $CO_{2}$ sequestration amount (10k tons).
+
+## Interface
+
+Here are several key components of the application interface:
+
+1.  **Custom spatio-temporal range**：On the left side of the main interface of the application, an interactive dashboard is displayed, where users can select different years, months, urban agglomerations, provinces, and cities according to their needs. After clicking the corresponding load button, the interactive map in the middle will display the layer of the selected area. Through this customized dashboard, users can quickly select research areas of interest.
+
+2.  **Interactive map**: The middle part of the application interface will provide an interactive map, where users can zoom in and out to view specific areas. Additionally, at the top of the interface, users can view the map in a targeted manner by selecting different layers (as shown in the table below) based on their research interests. In addition, users can click on any city area to view the layers.
+
+    +--------------+-------------------------------------------------------------+
+    | Layer        | Indicator                                                   |
+    +==============+=============================================================+
+    | 1            | CO₂ NetEmissions                                            |
+    +--------------+-------------------------------------------------------------+
+    | 2            | CO₂ Emissions                                               |
+    +--------------+-------------------------------------------------------------+
+    | 3            | CO₂ Sequestration                                           |
+    +--------------+-------------------------------------------------------------+
+    | 4            | Nighttime Light                                             |
+    +--------------+-------------------------------------------------------------+
+    | 5            | FPAR (Photosynthetically Active Radiation Absorption Ratio) |
+    +--------------+-------------------------------------------------------------+
+    | 6            | Epsilon (Energy Conversion Effciency)                       |
+    +--------------+-------------------------------------------------------------+
+    | 7            | NPP (Net Carbon Sequestration)                              |
+    +--------------+-------------------------------------------------------------+
+    | 8            | WE (Water Use Effciency)                                    |
+    +--------------+-------------------------------------------------------------+
+
+3.  **Visual charts**: After the user selects urban agglomeration, province, city, and specific indicator on the left panel and clicks the corresponding button to load them, the dashboard on the right side of the application interface will display visual charts. They are line chart comparing monthly changes in CO₂ emissions, sequestration, and net emissions; Line chart of monthly changes in multiple indicators, as well as a pie chart of the proportion of annual net CO₂ emissions of each city in its urban agglomeration. These charts can help users understand data in a visual way.
 
 ## The Application
 
-Replace the link below with the link to your application.
-
 ::: column-page
-<iframe src="https://ruoyun2025.projects.earthengine.app/view/text1" width="100%" height="700px">
+<iframe src="https://ruoyun2025.projects.earthengine.app/view/urban-carbon-archives-of-chinas-five-major-urban-agglomeration" width="120%" height="800px">
 
 </iframe>
 :::
 
 ## How it Works
 
-Use this section to explain how your application works using code blocks and text explanations (no more than 500 words excluding code):
+### **1.** Data Import and Preliminary Processing
 
-``` js
-Map.setCenter(35.51898, 33.90153, 15);
+This section loads the city list (UG_list) and Chinese city boundary data (gadm41_CHN_2hp). By matching provinces and city names, the city boundaries of the five major urban agglomerations in China are extracted, and attributes such as *region* and $V_{it}$ value are attached. In addition, the researchers loaded VIIRS nighttime light data as the basis for subsequent CO₂ emissions estimates. However, only preliminary data import is carried out at this stage, and more remote sensing data such as meteorology and vegetation data will be imported in subsequent analysis steps to further calculate carbon sequestration and its key indicators.
 
-Map.setOptions("satellite");
+``` javascript
+// ====================== Loading and processing data ======================
+var selectedCitiesTable = ee.FeatureCollection('projects/ee-siyili/assets/UG_list');
+var allChinaCities = ee.FeatureCollection("projects/ee-siyili/assets/gadm41_CHN_2_shp")
+  .filter(ee.Filter.eq("COUNTRY", "China"));
 
-var aoi = ee.Geometry.Point(35.51898, 33.90153).buffer(3000);
+// Match the urban list with the national boundaries
+var matchedCities = selectedCitiesTable.map(function(row) {
+  var city = row.getString("city");
+  var province = row.getString("province"); 
+
+  var matches = allChinaCities.filter(ee.Filter.and(
+    ee.Filter.eq("NAME_1", province),
+    ee.Filter.eq("NAME_2", city)
+  ));
+
+  var mergedGeom = ee.FeatureCollection(matches).union().geometry();
+  var count = matches.size();
+
+// Extract other attribute information
+var region = row.getString("region");
+var Vit = row.getNumber("Vit");
+var urbanAgg = row.getString("UrbanAgg");
+
+return ee.Feature(mergedGeom).set({
+  'NAME_2': city,
+  'NAME_1': province,
+  'region': region,
+  'Vit': Vit,
+  'UrbanAgg': urbanAgg,
+  'match_count': count
+});
+}).filter(ee.Filter.gt('match_count', 0));
+
+// Load base image dataset
+var dataset = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG')  
+                .filterDate('2014-01-01', '2023-12-31');  // VIIRS monthly nighttime light Dataset
 ```
 
-You can include images:
+### **2.** Interface and Interactive Controls Design
 
-![Pixelwise T-Test, 2018](images/beirut_change_2020.jpg)
+This section aims to built an interactive interface, including the main map (MyMap), status prompt bar, chart panel, and various selectors, supporting flexible filtering of year, month, urban agglomeration, province, city, and indicators. Simultaneously, it also provides a clear button and 3 load data buttons to dynamically update maps and charts. The interface facilitates users to quickly locate or switch cities, provinces, and urban agglomerations.
 
-and math: $$ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} $$
+``` javascript
+// ====================== Map and interface initialisation ======================
+var MyMap = ui.Map();
+
+var statusLabel = ui.Label('Waiting for the operation...'); // Real-time display of operation progress
+
+var indicatorChartWidget = null;
+
+function updateStatus(msg) {
+  statusLabel.setValue(msg);
+}
+
+MyMap.addLayer(matchedCities.style({color: 'gray', fillColor: '00000000'}), {}, 'urban boundary');
+MyMap.setCenter(104, 30, 5);
+
+// =============== Legend panel ================
+var allLegendPanel = ui.Panel({
+  layout: ui.Panel.Layout.flow('horizontal'),
+  style: {
+    position: 'bottom-left',
+    padding: '8px',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    width: '500px',
+    maxHeight: '115px',
+    whiteSpace: 'nowrap', 
+  }
+});
+MyMap.add(allLegendPanel);
+
+// Generate legends for each layer
+function createLegendBox(title, palette, min, max) {
+  var titleLabel = ui.Label({
+    value: title,
+    style: {fontWeight: 'bold', fontSize: '12px', margin: '2px 4px'}
+  });
+
+  var colorBar = ui.Thumbnail({
+    image: ee.Image.pixelLonLat().select(0)
+      .multiply((max - min) / 100.0).add(min),
+    params: {
+      bbox: [0, 0, 100, 1],
+      dimensions: '100x10',
+      format: 'png',
+      min: min,
+      max: max,
+      palette: palette
+    },
+    style: {stretch: 'horizontal', margin: '4px 0'}
+  });
+
+  var numTicks = 2;
+  var step = (max - min) / (numTicks - 1);
+
+  var tickLabels = [];
+  for (var i = 0; i < numTicks; i++) {
+    var value = (min + i * step).toFixed(0);
+    tickLabels.push(ui.Label(value, {
+      margin: '0 2px',
+      textAlign: 'center',
+      stretch: 'horizontal'
+    }));
+  }
+
+  var labelRow = ui.Panel({
+    widgets: tickLabels,
+    layout: ui.Panel.Layout.flow('horizontal'),
+    style: {stretch: 'horizontal'}
+  });
+
+  var box = ui.Panel({
+    widgets: [titleLabel, colorBar, labelRow],
+    style: {
+      margin: '0 10px',
+      width: '120px'
+    }
+  });
+
+  return box;
+}
+
+// =============== UI control design ================
+var currentCityName = null;
+
+// Creating a year selector
+var yearSelect = ui.Select({
+  items: ['2014', '2015', '2016', '2017','2018', '2019', '2020','2021', '2022', '2023'],
+  value: '2023',
+  placeholder: 'Select Year'
+});
+
+// Creating a month selector
+var monthSlider = ui.Slider({
+  min: 0, // 0 for the whole year
+  max: 12,
+  step: 1,
+  value: 0,
+  style: {stretch: 'horizontal'},
+  onChange: function(month) {
+  if (currentCityName !== null) {
+    chartPanel.clear();
+    var cityFeature = matchedCities.filter(ee.Filter.eq('NAME_2', currentCityName)).first();
+
+    cityFeature.evaluate(function(f) {
+      if (f) {
+        var cityGeom = ee.Feature(f).geometry();
+        var selectedYear = yearSelect.getValue();
+
+        updateMap(selectedYear, cityGeom, month);
+        plotSinglecityCarbonChart(currentCityName, cityGeom, parseInt(selectedYear), month)
+        .then(function() {
+          plotCityIndicatorChart(currentCityName, cityGeom, parseInt(selectedYear), indicatorSelect.getValue());
+        });
+        updateStatus('Select Month：' + month);
+      } else {
+        updateStatus('No city information found');
+      }
+    });
+  }
+}
+});
+
+var monthLabel = ui.Label('Please select month (0 = all year)');
+
+var monthTipLabel = ui.Label({
+  value: 'Slide to update month selection',
+  style: {color: 'gray', fontSize: '11px', margin: '4px 0 8px 8px'}
+});
+
+// Creating a clear button
+var clearButton = ui.Button({
+  label: 'Clear Selection',
+  onClick: function() {
+    currentCityName = null;
+    
+    var layers = MyMap.layers();
+  while (layers.length() > 0) {
+    layers.remove(layers.get(0));
+  }
+  
+    MyMap.addLayer(matchedCities.style({color: 'gray', fillColor: '00000000'}), {}, 'urban boundary');
+
+    allLegendPanel.clear();
+    chartPanel.clear();
+    urbanAggSelect.setValue(null);
+    provinceSelect.items().reset([]);
+    provinceSelect.setValue(null);
+    citySelect.items().reset([]);
+    citySelect.setValue(null);
+    updateStatus('City selection has been cleared. Please select again.');
+  }
+});
+
+// Creating a city selector
+var urbanAggSelect = ui.Select({placeholder: 'Select Urban Agglomeration'});
+var provinceSelect = ui.Select({placeholder: 'Select Province'});
+var citySelect = ui.Select({placeholder: 'Select City'});
+
+var urbanAggList = [
+  'Beijing-Tianjin-Hebei',
+  'Yangtze River Delta',
+  'Pearl River Delta',
+  'Middle Yangtze River',
+  'Chengdu-Chongqing'
+];
+urbanAggSelect.items().reset(urbanAggList);
+
+// Urban Agglomeration
+urbanAggSelect.onChange(function(urbanAgg) {
+  var provinces = matchedCities
+    .filter(ee.Filter.eq('UrbanAgg', urbanAgg))
+    .aggregate_array('NAME_1')
+    .distinct()
+    .sort();
+
+  provinces.evaluate(function(provinceList) {
+    provinceSelect.items().reset(provinceList);
+    provinceSelect.setValue(null);
+    citySelect.items().reset([]);
+    citySelect.setValue(null);
+  });
+
+  if (urbanAgg) {
+    var urbanAggCities = matchedCities.filter(ee.Filter.eq('UrbanAgg', urbanAgg));
+    var urbanAggGeometry = urbanAggCities.geometry();
+
+    var layers = MyMap.layers();
+    while (layers.length() > 0) {
+      layers.remove(layers.get(0));
+    }
+
+    MyMap.addLayer(matchedCities.style({color: 'gray', fillColor: '00000000'}), {}, 'urban boundary');
+    MyMap.addLayer(urbanAggCities.style({
+      color: 'blue',
+      fillColor: '0000FF33',
+      width: 2
+    }), {}, 'Selected Urban Agglomeration');
+
+    MyMap.centerObject(urbanAggGeometry, 6);
+    updateStatus('Selected Urban Agglomeration：' + urbanAgg);
+  }
+});
+
+// Province
+provinceSelect.onChange(function(province) {
+  var urbanAgg = urbanAggSelect.getValue();
+
+  var cities = matchedCities
+    .filter(ee.Filter.and(
+      ee.Filter.eq('UrbanAgg', urbanAgg),
+      ee.Filter.eq('NAME_1', province)
+    ))
+    .aggregate_array('NAME_2')
+    .distinct()
+    .sort();
+
+  cities.evaluate(function(cityList) {
+    citySelect.items().reset(cityList);
+    citySelect.setValue(null);
+  });
+
+  if (urbanAgg && province) {
+    var provinceCities = matchedCities.filter(ee.Filter.and(
+      ee.Filter.eq('UrbanAgg', urbanAgg),
+      ee.Filter.eq('NAME_1', province)
+    ));
+    var provinceGeometry = provinceCities.geometry();
+
+    var layers = MyMap.layers();
+    while (layers.length() > 0) {
+      layers.remove(layers.get(0));
+    }
+
+    MyMap.addLayer(matchedCities.style({color: 'gray', fillColor: '00000000'}), {}, 'urban boundary');
+    MyMap.addLayer(provinceCities.style({
+      color: 'green',
+      fillColor: '00FF0033',
+      width: 2
+    }), {}, 'Selected Province');
+
+    MyMap.centerObject(provinceGeometry, 7);
+    updateStatus('Selected Province：' + province);
+  }
+});
+
+// City
+citySelect.onChange(function(city) {
+  var urbanAgg = urbanAggSelect.getValue();
+  var province = provinceSelect.getValue();
+
+  if (urbanAgg && province && city) {
+    currentCityName = city;
+
+    var cityFeature = matchedCities.filter(ee.Filter.and(
+      ee.Filter.eq('UrbanAgg', urbanAgg),
+      ee.Filter.eq('NAME_1', province),
+      ee.Filter.eq('NAME_2', city)
+    )).first();
+
+    cityFeature.evaluate(function(f) {
+      if (f) {
+        var cityGeom = ee.Feature(f).geometry();
+
+        var layers = MyMap.layers();
+        while (layers.length() > 0) {
+          layers.remove(layers.get(0));
+        }
+
+        MyMap.addLayer(matchedCities.style({
+          color: 'gray',
+          fillColor: '00000000'
+        }), {}, 'urban boundary');
+
+        MyMap.addLayer(ee.FeatureCollection(ee.Feature(f)).style({
+          color: 'red',
+          fillColor: 'FF000033',
+          width: 2
+        }), {}, 'Selected City');
+
+        MyMap.centerObject(cityGeom, 7);
+        updateStatus('Selected Province：' + city + ' (Click "Load City Data" to view the layer.)');
+      } else {
+        updateStatus('No city information found');
+      }
+    });
+  }
+});
+
+// Creating an indicator selector
+var indicatorSelect = ui.Select({
+  items: [
+    {label: 'Net Carbon Sequestration', value: 'NPP'},
+    {label: 'WE (Water Use Effciency)', value: 'WE'},
+    {label: 'FPAR (Photosynthetically Active Radiation Absorption Ratio)', value: 'FPAR'},
+    {label: 'Energy Conversion Effciency', value: 'Epsilon'},
+    {label: 'Carbon Emission (CO₂)', value: 'Emission'},
+    {label: 'Carbon Sequestration (CO₂)', value: 'CO2Absorption'},
+    {label: 'Precipitation', value: 'Rain'},
+    {label: 'T (Temperature)', value: 'Temperature'},
+    {label: 'PAR (Photosynthetically Active Radiation)', value: 'PAR'}
+  ],
+  value: 'NPP',
+  placeholder: 'select an indicator'
+});
+
+indicatorSelect.onChange(function(indicator) {
+  if (currentCityName !== null) {
+    if (indicatorChartWidget !== null) {
+      chartPanel.remove(indicatorChartWidget);
+      indicatorChartWidget = null;
+    }
+
+    var cityFeature = matchedCities.filter(ee.Filter.eq('NAME_2', currentCityName)).first();
+    cityFeature.evaluate(function(f){
+      if (f) {
+        var cityGeom = ee.Feature(f).geometry();
+        var selectedYear = yearSelect.getValue();
+        var selectedMonth = monthSlider.getValue();
+
+        indicatorChartWidget = plotCityIndicatorChart(currentCityName, cityGeom, parseInt(selectedYear), indicator);
+      }
+    });
+  }
+});
+
+var indicatorTipLabel = ui.Label({
+  value: 'Update will be shown in the last chart.',
+  style: {
+    fontSize: '11px',
+    color: 'gray',
+    margin: '0 0 4px 10px',
+    padding: '0'
+  }
+});
+
+// "Load Urban Agglomeration Data" button
+var loadUrbanAggButton = ui.Button({
+  label: 'Load Urban Agglomeration Data',
+  onClick: function() {
+    var urbanAgg = urbanAggSelect.getValue();
+    var year = yearSelect.getValue();
+    if (urbanAgg) {
+      chartPanel.clear();
+      var urbanAggCities = matchedCities.filter(ee.Filter.eq('UrbanAgg', urbanAgg));
+      var urbanAggGeometry = urbanAggCities.geometry();
+
+      plotUrbanAgglomerationCarbonChart(urbanAgg, urbanAggGeometry, parseInt(year));
+
+      updateStatus('Loading Urban Agglomeration: ' + urbanAgg);
+    } else {
+      updateStatus('Please select an urban agglomeration.');
+    }
+  }
+});
+
+
+//“Load Provicne Data” button
+var loadProvinceButton = ui.Button({
+  label: 'Load Province Data',
+  onClick: function() {
+    var urbanAgg = urbanAggSelect.getValue();
+    var province = provinceSelect.getValue();
+    var year = yearSelect.getValue();
+    if (urbanAgg && province) {
+      chartPanel.clear();
+      var provinceGeom = matchedCities.filter(ee.Filter.and(
+        ee.Filter.eq('UrbanAgg', urbanAgg),
+        ee.Filter.eq('NAME_1', province)
+      )).geometry();
+
+      plotProvinceCarbonChart(province, provinceGeom, parseInt(year));
+
+      updateStatus('Loading Province: ' + province);
+    } else {
+      updateStatus('Please select urban agglomeration and province first.');
+    }
+  }
+});
+
+// "Load City Data" button
+var loadFromSelectButton = ui.Button({
+  label: 'Load City Data',
+  onClick: function() {
+    var urbanAgg = urbanAggSelect.getValue();
+    var province = provinceSelect.getValue();
+    var city = citySelect.getValue();
+    var year = yearSelect.getValue();
+    var month = monthSlider.getValue();
+
+    if (urbanAgg && province && city) {
+      chartPanel.clear();
+      currentCityName = city;
+      var cityGeom = matchedCities.filter(ee.Filter.and(
+        ee.Filter.eq('UrbanAgg', urbanAgg),
+        ee.Filter.eq('NAME_1', province),
+        ee.Filter.eq('NAME_2', city)
+      )).first().geometry();
+
+      updateMap(year, cityGeom, month);
+      plotSinglecityCarbonChart(city, cityGeom, parseInt(year), month)
+      .then(function() {
+  indicatorChartWidget = plotCityIndicatorChart(city, cityGeom, parseInt(year), indicatorSelect.getValue());
+  updateStatus('Loading City: ' + city);
+      });
+    } else {
+      updateStatus('Please select an urban agglomeration, province, and city.');
+    }
+  }
+});
+
+// Integrate controls into panels
+var controls = ui.Panel({
+  widgets: [
+    ui.Label('Please select year'), 
+    yearSelect,
+    monthLabel,
+    monthSlider,
+    monthTipLabel,
+    clearButton,
+    ui.Label('Please select an urban agglomeration'),
+    urbanAggSelect, 
+    loadUrbanAggButton,
+    ui.Label('Please select a province'),
+    provinceSelect,
+    loadProvinceButton,
+    ui.Label('Please select a city'),
+    citySelect,
+    ui.Label('Please select an indicator'),
+    indicatorSelect,
+    indicatorTipLabel,
+    loadFromSelectButton
+  ],
+  layout: ui.Panel.Layout.flow('vertical'),
+  style: {
+    margin: '4px',
+    padding: '4px'
+  }
+});
+
+var sidebar = ui.Panel({
+  widgets: [
+    statusLabel,
+    controls
+  ],
+  layout: ui.Panel.Layout.flow('vertical'),
+  style: {
+    width: '290px',
+    position: 'bottom-left'
+  }
+});
+
+// Define the right chart panel
+var chartPanel = ui.Panel({  
+  layout: ui.Panel.Layout.flow('vertical'),  
+  style: {  
+    position: 'top-right',  
+    width: '300px',    
+    height: '900',    
+    padding: '10px',  
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',  
+    border: '1px solid black'  
+  }  
+});  
+ui.root.insert(1, chartPanel);  
+
+// Clear the interface again
+ui.root.clear();
+
+// Add a sidebar 
+ui.root.add(sidebar); 
+
+// Add Map (MyMap)
+ui.root.add(MyMap);
+
+// Add chart area
+ui.root.add(chartPanel);
+
+// =============== Map click interaction ================
+// Event Listener
+MyMap.onClick(function(coords) {
+  var point = ee.Geometry.Point(coords.lon, coords.lat);
+  var clickedFeature = matchedCities.filterBounds(point).first();
+
+//Selecting City Event
+  clickedFeature.evaluate(function(f) {
+if (f) {
+  chartPanel.clear();
+      var cityName = f.properties.NAME_2;
+      currentCityName = cityName;
+      var cityGeom = matchedCities.filter(ee.Filter.eq("NAME_2", cityName)).first().geometry();
+      var selectedYear = yearSelect.getValue();
+      var selectedMonth = monthSlider.getValue();
+      
+      updateMap(selectedYear, cityGeom, selectedMonth);
+      plotSinglecityCarbonChart(cityName, cityGeom, parseInt(selectedYear), selectedMonth)
+      .then(function() {
+        indicatorChartWidget = plotCityIndicatorChart(cityName, cityGeom, parseInt(selectedYear), indicatorSelect.getValue());
+        updateStatus('Click on the city: ' + cityName);
+      });
+    } else {
+      updateStatus('No city selected');
+    }
+  });
+});
+
+// Processing the selected year event
+yearSelect.onChange(function(year) {
+  if (currentCityName !== null) {
+    chartPanel.clear();
+    var cityFeature = matchedCities.filter(ee.Filter.eq('NAME_2', currentCityName)).first();
+
+    cityFeature.evaluate(function(f) {
+      if (f) {
+        var cityGeom = ee.Feature(f).geometry();
+        var selectedMonth = monthSlider.getValue();
+
+        updateMap(year, cityGeom, selectedMonth);
+        plotSinglecityCarbon(currentCityName, cityGeom, parseInt(year), selectedMonth);
+        plotCityIndicatorChart(currentCityName, cityGeom, parseInt(year), indicatorSelect.getValue());
+        updateStatus('Year switching: ' + year);
+      } else {
+        updateStatus('City information not found');
+      }
+    });
+  }
+});
+```
+
+### **3.** Data Processing and Analysis
+
+In this section, the researchers combine the city, year, and month parameters to dynamically extract and process nighttime light, meteorological, and vegetation related data, completing the calculation of core indicators such as CO₂ emissions, CO₂ sequestration, and net CO₂ emissions. The specific calculation method has been explained in detail in the Methodology section above.
+
+``` javascript
+// =============== Main plotting function ================
+// Set visualization parameters
+var viirsVis = {
+  min: 0.0,
+  max: 50.0,
+  palette: [
+    'black','darkblue','blue','purple',
+    'cyan','green','yellow','white'
+  ]
+};
+
+var ncVis = {
+  min: 0,
+  max: 10000,
+  palette: ['green','yellow','red']
+};
+
+// Fuction of carbon emissions
+var computeNCitj = function(feature) {
+  var region = feature.getString('region');
+  var DN     = ee.Number(feature.get('averageDNitj'));
+  var Vit    = ee.Number(feature.get('Vit'));
+
+  return ee.Algorithms.If(
+    DN.lte(0),
+    feature,
+    (function() {
+      var log_DN = DN.log();
+      var log_NCitj = ee.Algorithms.If(
+        region.equals('eastern'),
+        log_DN.multiply(1.0484).add(Vit.subtract(6.1871)),
+        ee.Algorithms.If(
+          region.equals('central'),
+          log_DN.multiply(0.8773).subtract(4.2414),
+          ee.Algorithms.If(
+            region.equals('western'),
+            log_DN.multiply(0.3645).add(Vit.add(2.2189)),
+            null
+          )
+        )
+      );
+      return feature.set('NCitj', ee.Number(log_NCitj).exp());
+    })()
+  );
+};
+
+// Update the display content of the map
+function updateMap(year, geometry, month) {
+  var layers = MyMap.layers();
+while (layers.length() > 0) {
+  layers.remove(layers.get(0));
+}
+  allLegendPanel.clear();
+  
+  var startDate, endDate;
+  if (month === 0) {
+    startDate = ee.Date.fromYMD(parseInt(year), 1, 1);
+    endDate = ee.Date.fromYMD(parseInt(year), 12, 31);
+  } else {
+    var monthInt = parseInt(month);  
+    startDate = ee.Date.fromYMD(parseInt(year), monthInt, 1);
+    endDate = startDate.advance(1, 'month');
+  }
+  MyMap.addLayer(matchedCities.style({color: 'gray', fillColor: '00000000'}), {}, 'Boundary of the research area');
+
+//  Nighttime Light Image Collection (year)
+  var viirs = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG')
+    .filterDate(startDate, endDate)
+    .select('avg_rad')         // Select the average emissivity band
+    .mean()   
+    .clip(geometry);
+
+// Layer (year)
+var cityFeature = matchedCities.filterBounds(geometry).first();
+var region = cityFeature.get('region');
+var Vit = cityFeature.get('Vit');
+
+var viirsLight = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG')
+  .filterDate(startDate, endDate)
+  .select('avg_rad')
+  .mean()
+  .clip(geometry);
+
+// Average Nighttime Light
+var meanDN = viirsLight.reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: geometry,
+  scale: 500,
+  maxPixels: 1e9
+}).get('avg_rad');
+
+// Handling missing values
+meanDN = ee.Algorithms.If(meanDN, meanDN, 0);
+var logDN = ee.Number(meanDN).log();
+
+// Calculate carbon emissions by region
+var logNCitj = ee.Algorithms.If(
+  ee.String(region).equals('eastern'),
+  logDN.multiply(1.0484).add(ee.Number(Vit).subtract(6.1871)),
+  ee.Algorithms.If(
+    ee.String(region).equals('central'),
+    logDN.multiply(0.8773).subtract(4.2414),
+    ee.Algorithms.If(
+      ee.String(region).equals('western'),
+      logDN.multiply(0.3645).add(ee.Number(Vit).add(2.2189)),
+      0
+    )
+  )
+);
+
+// Estimating total carbon emissions
+  var NCitj = ee.Number(logNCitj).exp();
+  var cityArea = geometry.area();  // m²
+  var emission = NCitj.multiply(cityArea).divide(250000);  // Ten thousand tons CO₂
+
+  var viirsVis = {        // Visualization
+    min: 0.0,
+    max: 50.0,
+    palette: [
+      'black', 'darkblue', 'blue', 'purple',
+      'cyan', 'green', 'yellow', 'white'
+    ]
+  };
+  
+  var safeDN = viirs.where(viirs.lte(0), 0.1);
+  var logDNimg = safeDN.log();
+
+// Regional coefficient layer
+  var regionStr = ee.String(region);
+  var VitSafe = ee.Algorithms.If(Vit, Vit, 0);
+
+  var a_val = ee.Algorithms.If(
+    regionStr.equals('eastern'), 1.0484,
+    ee.Algorithms.If(regionStr.equals('central'), 0.8773, 0.3645)
+  );
+
+  var b_val = ee.Algorithms.If(
+    regionStr.equals('eastern'), ee.Number(VitSafe).subtract(6.1871),
+    ee.Algorithms.If(regionStr.equals('central'), -4.2414, ee.Number(VitSafe).add(2.2189))
+  );
+
+  var a_img = ee.Image.constant(a_val);
+  var b_img = ee.Image.constant(b_val);
+
+  var logNCitj = logDNimg.multiply(a_img).add(b_img);
+  var emissionImage = logNCitj.exp().multiply(1e10);  
+  var pixelArea = ee.Image.pixelArea();   // Convert units to:(g/m²)
+  emissionImage = emissionImage.divide(pixelArea);  
+
+// Define Carbon Emissions Palette
+  var carbonPalette = [
+    '#ffffcc', '#ffeda0', '#fed976', '#feb24c', '#fd8d3c',
+    '#fc4e2a', '#e31a1c', '#bd0026', '#800026', '#4d0019',
+    '#2b000f', '#67001f', '#99003f', '#b2182b', '#d73027'
+  ];
+
+// Regional visualization scope (g/m²)
+  var visParams = ee.Dictionary({
+    'eastern': {min: 100, max: 3000},
+    'central': {min: 100, max: 4000},
+    'western': {min: 500, max: 5000}
+  });
+
+// NPP/FPAR/Epsilon/WE
+  var dataset = ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001')
+    .filterDate(startDate, endDate)
+    .mean()
+    .clip(geometry);
+
+  var rain_temp_par = dataset.expression(
+    'rain * 60 * 60 * 24 * 30', {'rain': dataset.select('Rainf_f_tavg')}
+  ).rename('rain')
+   .addBands(dataset.expression('temp - 273.15', {'temp': dataset.select('Tair_f_tavg')}).rename('temp'))
+   .addBands(dataset.expression('rad * 60 * 60 * 24 * 30 / 1e6 * 0.5', {'rad': dataset.select('Swnet_tavg')}).rename('par'));
+
+  var ndvi = ee.ImageCollection('MODIS/061/MOD13A2')
+    .filterDate(startDate, endDate)
+    .select('NDVI')
+    .mean()
+    .clip(geometry);
+
+  var ndvi_pro = ndvi.multiply(0.0001);
+  var SR = ndvi_pro.add(1).divide(ee.Image(1).subtract(ndvi_pro)).rename('SR');
+
+  var SR_min = SR.reduceRegion({reducer: ee.Reducer.min(), geometry: geometry, scale: 1000}).get('SR');
+  var SR_max = SR.reduceRegion({reducer: ee.Reducer.max(), geometry: geometry, scale: 1000}).get('SR');
+
+  var FPAR = SR.subtract(ee.Number(SR_min)).divide(ee.Number(SR_max).subtract(ee.Number(SR_min))).clamp(0, 0.95).rename('FPAR');
+  var FPAR_filled = FPAR.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(FPAR);
+
+  var evapCollection = ee.ImageCollection(
+    year <= 2020 ? 'MODIS/061/MOD16A2GF' : 'MODIS/061/MOD16A2'
+  );
+
+  var evap = evapCollection
+    .filterDate(startDate, endDate)
+    .mean()
+    .clip(geometry)
+    .select(['ET', 'PET']);
+
+  var WE = evap.expression(
+    '0.5 * ((0.5 + E) / Ep)', {
+      'E': evap.select('ET'),
+      'Ep': evap.select('PET')
+    }).rename('WE');
+
+  var WE_filled = WE.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(WE);
+
+  var T_opt = rain_temp_par.select('temp');
+  var Te1 = ee.Image(0.8).add(T_opt.multiply(0.027)).subtract(T_opt.pow(2).multiply(0.00005)).rename('Te1');
+
+  var Te2 = ee.Image(1.184)
+    .divide(ee.Image(1).add(T_opt.subtract(10).subtract(T_opt).multiply(0.2).exp()))
+    .multiply(ee.Image(1).divide(ee.Image(1).add(T_opt.subtract(10).add(T_opt).multiply(0.3).exp())))
+    .rename('Te2');
+
+  var epsilon = Te1.multiply(Te2).multiply(WE_filled).multiply(0.95).rename('epsilon');
+  var epsilon_filled = epsilon.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(epsilon);
+
+  var common_mask = FPAR_filled.mask()
+    .and(epsilon_filled.mask())
+    .and(WE_filled.mask())
+    .and(rain_temp_par.select('par').mask());
+
+  var par_masked = rain_temp_par.select('par').updateMask(common_mask);
+  var NPP = par_masked.multiply(FPAR_filled).multiply(epsilon_filled).rename('NPP');
+  var CO2_absorption = NPP.multiply(3.6667).rename('CO2_absorption'); // Carbon sequestration CO₂
+  // Calculate net carbon dioxide emissions: carbon dioxide emissions - carbon dioxide sequestration
+  var netEmission = emissionImage.subtract(CO2_absorption).rename('netEmission');
+
+  MyMap.centerObject(geometry, 7);
+```
+
+### **4. Map** Layers
+
+This section analyzes and displays the calculated results in a layered format, including nighttime light intensity, CO₂ emissions, CO₂ sequestration , net CO₂ emissions, NPP, WE, FPAR, and Epsilon. Users can switch between different indicator layers with one click through the interface, intuitively observing the spatial distribution characteristics and differences of CO₂ emissions and sequestration .
+
+Note: In the color matching design of the **Carbon Sequestration CO₂ layer**, a segmented color matching strategy combined with gradient color depth was adopted. Specifically, different color segments (orange-blue-green) are used to quickly distinguish the overall level of carbon sequestration; The gradient inside each color segment is further subdivided into intensity changes, allowing users to accurately perceive differences within the same level. In the **Net CO₂ emissions layer**, cool colors (green series) are used to represent carbon sequestration, warm colors (yellow to red series) are used to represent carbon emissions, and white is used as a bidirectional symmetrical color band structure with zero emissions, intuitively showing whether the city is a carbon source or sink.
+
+``` JavaScript
+// =========== Add Layer ==============
+// WE Layer
+  MyMap.addLayer(WE_filled.updateMask(common_mask), {min: 0, max: 1, palette: ['white', 'blue']}, 'WE');
+  allLegendPanel.add(createLegendBox('WE', ['white', 'blue'], 0, 1));
+
+// NPP Layer
+  MyMap.addLayer(NPP, {
+  min: 0,
+  max: 10,
+  palette: [
+    // 0 = white
+    '#ffffff',
+
+    // >0–3：Orange → Deep Red, Level 10 Gradient
+    '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548',
+    '#d7301f', '#c1271a', '#bd0026', '#99000d', '#67000d',
+
+    // 3–6：Blue → Purple
+    '#deebf7', '#9ecae1', '#3182bd', '#6a51a3', '#54278f',
+
+    // 6–10：Light green → Dark green
+    '#e5f5e0', '#a1d99b', '#31a354', '#006d2c'
+  ]
+}, 'NPP');
+  allLegendPanel.add(createLegendBox('NPP (gC/m²)', [
+    '#ffffff',
+    '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548',
+    '#d7301f', '#c1271a', '#bd0026', '#99000d', '#67000d',
+    '#deebf7', '#9ecae1', '#3182bd', '#6a51a3', '#54278f',
+    '#e5f5e0', '#a1d99b', '#31a354', '#006d2c'
+  ], 0, 10));
+  
+// NPP layer projection information
+  updateStatus('Carbon dioxide sequestration layer projection:', CO2_absorption.projection());
+  updateStatus('Carbon dioxide sequestration layer nominal scale (m):', CO2_absorption.projection().nominalScale());
+  updateStatus('Carbon dioxide emission layer projection:', emissionImage.projection());
+  updateStatus('Carbon dioxide emission layer nominal scale (m):', emissionImage.projection().nominalScale());
+
+// Epsilon Layer
+  MyMap.addLayer(epsilon_filled.updateMask(common_mask), {min: 0, max: 0.5, palette: ['purple', 'blue', 'green']}, 'Epsilon');
+  allLegendPanel.add(createLegendBox('Epsilon', ['purple', 'blue', 'green'], 0, 0.5));
+
+// FPAR Layer
+  MyMap.addLayer(FPAR_filled.updateMask(common_mask), {min: 0, max: 0.95, palette: ['yellow', 'orange', 'red']}, 'FPAR');
+  allLegendPanel.add(createLegendBox('FPAR', ['yellow', 'orange', 'red'], 0, 0.95));
+
+// Nighttime Light Layer
+  MyMap.addLayer(viirs, viirsVis, 'Night-time Lights');
+  allLegendPanel.add(createLegendBox('Nighttime light intensity', viirsVis.palette, viirsVis.min, viirsVis.max));
+
+// Carbon sequestration CO₂ Layer
+MyMap.addLayer(CO2_absorption, {
+  min: 0,
+  max: 30,   
+  palette: [
+    // 0 = white
+    '#ffffff',
+
+    // >0–3：Orange → Deep Red, Level 10 Gradient
+    '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548',
+    '#d7301f', '#c1271a', '#bd0026', '#99000d', '#67000d',
+
+    // 3–6：Blue → Purple
+    '#deebf7', '#9ecae1', '#3182bd', '#6a51a3', '#54278f',
+
+    // 6–10：Light green → Dark green
+    '#e5f5e0', '#a1d99b', '#31a354', '#006d2c'
+  ]
+}, 'Carbon sequestration (CO₂)');
+  allLegendPanel.add(createLegendBox('Carbon sequestration (CO₂)', [
+    '#ffffff',
+    '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548',
+    '#d7301f', '#c1271a', '#bd0026', '#99000d', '#67000d',
+    '#deebf7', '#9ecae1', '#3182bd', '#6a51a3', '#54278f',
+    '#e5f5e0', '#a1d99b', '#31a354', '#006d2c'
+  ], 0, 30));
+
+// CO₂ Emissions Layer
+  var selectedVis = visParams.get(regionStr).getInfo();
+
+  MyMap.addLayer(emissionImage, {
+    min: selectedVis.min,
+    max: selectedVis.max,
+    palette: carbonPalette
+  }, 'Carbon Emissions (CO₂)'); //(g/m²)
+  allLegendPanel.add(createLegendBox('Carbon Emissions (CO₂)', carbonPalette, selectedVis.min, selectedVis.max));
+
+// Net carbon dioxide emission layer
+  var netEmissionPalette = [
+    '#e5f5e0', '#a1d99b', '#31a354', '#006d2c',  // Negative value (sequestration)
+    '#ffffff',                                   // 0 (white)
+    '#ffffcc', '#ffeda0', '#fed976', '#feb24c',  // Positive value (Light emissions)
+    '#fd8d3c', '#fc4e2a', '#e31a1c', '#bd0026', '#800026'  // Positive value (Heavy emissions)
+  ];
+    
+  MyMap.addLayer(netEmission, {
+    min: -50,
+    max: 200,
+    palette: netEmissionPalette
+  }, 'Net CO₂ emissions (g/m²)');
+  allLegendPanel.add(createLegendBox('Net CO₂ emissions (g/m²)', netEmissionPalette, -50, 200));
+}
+```
+
+### **5.** Chart Drawing
+
+This section presents line charts of monthly CO₂ emissions, CO₂ sequestration, and net CO₂ emissions trends at different spatial scales (cities, provinces, urban agglomerations) over a year. In addition, the researchers also add a pie chart of the proportion of net CO₂ emissions of cities in urban agglomerations.
+
+``` JavaScript
+// =============== Line Chart Visualization ================
+
+// figure1: average values of each indicator in cities
+function plotCityIndicatorChart(cityName, geometry, year, indicator) {
+  indicator = indicator || 'NPP';
+var months = ee.List.sequence(1, 12);
+
+  var cityArea = geometry.area();
+
+  var cityFeature = matchedCities.filterBounds(geometry).first();
+  var region = cityFeature.get('region');
+  var Vit = cityFeature.get('Vit');
+
+  var monthlyData = months.map(function(m) {
+    var start = ee.Date.fromYMD(year, m, 1);
+    var end = start.advance(1, 'month');
+
+    var fldas = ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001')
+      .filterDate(start, end)
+      .first()
+      .clip(geometry);
+
+    var ndvi = ee.ImageCollection('MODIS/061/MOD13A2')
+      .filterDate(start, end)
+      .select('NDVI')
+      .first()
+      .clip(geometry);
+
+    var nightLight = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG')
+      .filterDate(start, end)
+      .first()
+      .clip(geometry);
+
+    var evapCollection = ee.ImageCollection(
+      year <= 2020 ? 'MODIS/061/MOD16A2GF' : 'MODIS/061/MOD16A2'
+    );
+    var evap = evapCollection
+      .filterDate(start, end)
+      .first()
+      .clip(geometry);
+
+    return ee.Algorithms.If(fldas && ndvi && nightLight && evap, (function() {
+      var rain_temp_par = fldas.expression(
+        'rain * 60 * 60 * 24 * 30', {'rain': fldas.select('Rainf_f_tavg')}
+      ).rename('rain')
+        .addBands(fldas.expression('temp - 273.15', {'temp': fldas.select('Tair_f_tavg')}).rename('temp'))
+        .addBands(fldas.expression('rad * 60 * 60 * 24 * 30 / 1e6 * 0.5', {'rad': fldas.select('Swnet_tavg')}).rename('par'));
+
+      var ndvi_pro = ndvi.multiply(0.0001);
+      var SR = ndvi_pro.add(1).divide(ee.Image(1).subtract(ndvi_pro)).rename('SR');
+
+      var SR_min = SR.reduceRegion({reducer: ee.Reducer.min(), geometry: geometry, scale: 1000}).get('SR');
+      var SR_max = SR.reduceRegion({reducer: ee.Reducer.max(), geometry: geometry, scale: 1000}).get('SR');
+
+      var FPAR = SR.subtract(ee.Number(SR_min))
+        .divide(ee.Number(SR_max).subtract(ee.Number(SR_min)))
+        .clamp(0, 0.95)
+        .rename('FPAR');
+      var FPAR_filled = FPAR.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(FPAR);
+
+      var WE = evap.expression(
+        '0.5 * ((0.5 + E) / Ep)', {
+          'E': evap.select('ET'),
+          'Ep': evap.select('PET')
+        }).rename('WE');
+      var WE_filled = WE.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(WE);
+
+      var T_opt = rain_temp_par.select('temp');
+      var Te1 = ee.Image(0.8).add(T_opt.multiply(0.027)).subtract(T_opt.pow(2).multiply(0.00005));
+      var Te2 = ee.Image(1.184)
+        .divide(ee.Image(1).add(T_opt.subtract(10).subtract(T_opt).multiply(0.2).exp()))
+        .multiply(ee.Image(1).divide(ee.Image(1).add(T_opt.subtract(10).add(T_opt).multiply(0.3).exp())));
+
+      var epsilon = Te1.multiply(Te2).multiply(WE_filled).multiply(0.95);
+      var epsilon_filled = epsilon.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(epsilon);
+
+      var common_mask = FPAR_filled.mask()
+        .and(epsilon_filled.mask())
+        .and(WE_filled.mask())
+        .and(rain_temp_par.select('par').mask());
+
+      var par_masked = rain_temp_par.select('par').updateMask(common_mask);
+      var NPP = par_masked.multiply(FPAR_filled).multiply(epsilon_filled).rename('NPP');
+
+      var safeDN = nightLight.select('avg_rad').where(nightLight.select('avg_rad').lte(0), 0.1);
+      var logDNimg = safeDN.log();
+
+      var regionStr = ee.String(region);
+      var VitSafe = ee.Algorithms.If(Vit, Vit, 0);
+
+      var a_val = ee.Algorithms.If(
+        regionStr.equals('eastern'), 1.0484,
+        ee.Algorithms.If(regionStr.equals('central'), 0.8773, 0.3645)
+      );
+
+      var b_val = ee.Algorithms.If(
+        regionStr.equals('eastern'), ee.Number(VitSafe).subtract(6.1871),
+        ee.Algorithms.If(regionStr.equals('central'), -4.2414, ee.Number(VitSafe).add(2.2189))
+      );
+
+      var a_img = ee.Image.constant(a_val);
+      var b_img = ee.Image.constant(b_val);
+
+      var logNCitj = logDNimg.multiply(a_img).add(b_img);
+      var emissionImage = logNCitj.exp().multiply(1e10).divide(ee.Image.pixelArea());
+
+      var CO2_absorption = NPP.multiply(3.6667).rename('CO2_absorption');
+
+      var targetImage = ee.Image(0);
+
+      if (indicator === 'NPP') {
+        targetImage = NPP;
+      } else if (indicator === 'WE') {
+        targetImage = WE_filled;
+      } else if (indicator === 'FPAR') {
+        targetImage = FPAR_filled;
+      } else if (indicator === 'Epsilon') {
+        targetImage = epsilon_filled;
+      } else if (indicator === 'Emission') {
+        targetImage = emissionImage;
+      } else if (indicator === 'CO2Absorption') {
+        targetImage = CO2_absorption;
+      } else if (indicator === 'Rain') {
+        targetImage = rain_temp_par.select('rain');
+      } else if (indicator === 'Temperature') {
+        targetImage = rain_temp_par.select('temp');
+      } else if (indicator === 'PAR') {
+        targetImage = rain_temp_par.select('par');
+      }
+
+      var meanValue = targetImage.reduceRegion({
+        reducer: ee.Reducer.mean(),
+        geometry: geometry,
+        scale: 1000,
+        maxPixels: 1e9
+      }).values().get(0);
+
+meanValue = ee.Algorithms.If(meanValue, meanValue, 0);
+
+      return ee.Feature(null, {
+        'month': m,
+        'value': meanValue,
+        'city': cityName
+      });
+
+    })(), null);
+  });
+
+  var featureCol = ee.FeatureCollection(monthlyData)
+    .filter(ee.Filter.notNull(['value']))
+    .sort('month');
+  
+  var indicatorUnits = {
+  'NPP': 'gC/m²',
+  'WE': '',
+  'FPAR': '',
+  'Epsilon': '', 
+  'Emission': 'gCO₂/m²',
+  'CO2Absorption': 'gCO₂/m²',
+  'Rain': 'mm/month',
+  'Temperature': '°C',
+  'PAR': 'MJ/m²/month'
+    
+  };
+
+  
+  var unit = indicatorUnits[indicator] || '';
+
+  var chart = ui.Chart.feature.byFeature(featureCol, 'month', 'value')
+    .setChartType('LineChart')
+    .setOptions({
+      title:   'Monthly Average Values of '+ indicator + '\n' + cityName + '（' + year + '）',
+      hAxis: {title: 'month'},
+      vAxis: {title: 'Average Values of'+ indicator + unit},
+      lineWidth: 2,
+      pointSize: 4,
+      height: 152,
+      legend: {position: 'none'}
+    });
+
+  chartPanel.add(chart);
+return chart;
+}
+
+
+// figure2: Total carbon emisssions,sequestration,netemisssions amount in agglomerations (10ktons CO₂)
+function plotUrbanAgglomerationCarbonChart(urbanAggName, geometry, year) {
+  var months = ee.List.sequence(1, 12);
+  var cityArea = geometry.area();
+
+  var sampleCity = matchedCities.filter(ee.Filter.eq('UrbanAgg', urbanAggName)).first();
+  var region = sampleCity.get('region');
+  var Vit = sampleCity.get('Vit');
+
+  var monthly = months.map(function(m) {
+    var start = ee.Date.fromYMD(year, m, 1);
+    var end = start.advance(1, 'month');
+
+    var nightLight = dataset.filterDate(start, end).mean().clip(geometry);
+    var fldas = ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001')
+      .filterDate(start, end).first();
+    var ndvi = ee.ImageCollection('MODIS/061/MOD13A2')
+      .filterDate(start, end).select('NDVI').first();
+    var evapCollection = ee.ImageCollection(
+      year <= 2020 ? 'MODIS/061/MOD16A2GF' : 'MODIS/061/MOD16A2'
+    );
+    var evap = evapCollection.filterDate(start, end).first();
+
+    return ee.Algorithms.If(nightLight && fldas && ndvi && evap, (function() {
+      var meanDN = nightLight.select('avg_rad').reduceRegion({
+        reducer: ee.Reducer.mean(),
+        geometry: geometry,
+        scale: 500,
+        maxPixels: 1e9
+      }).get('avg_rad');
+      meanDN = ee.Algorithms.If(meanDN, meanDN, 0);
+      var logDN = ee.Number(meanDN).log();
+      var logNCitj = ee.Algorithms.If(
+        ee.String(region).equals('eastern'),
+        logDN.multiply(1.0484).add(ee.Number(Vit).subtract(6.1871)),
+        ee.Algorithms.If(
+          ee.String(region).equals('central'),
+          logDN.multiply(0.8773).subtract(4.2414),
+          ee.Algorithms.If(
+            ee.String(region).equals('western'),
+            logDN.multiply(0.3645).add(ee.Number(Vit).add(2.2189)),
+            0
+          )
+        )
+      );
+      var NCitj = ee.Number(logNCitj).exp();
+      var emission = NCitj.multiply(cityArea).divide(250000);
+
+      var rain_temp_par = fldas.expression(
+        'rain * 60 * 60 * 24 * 30', {'rain': fldas.select('Rainf_f_tavg')}
+      ).rename('rain')
+        .addBands(fldas.expression('temp - 273.15', {'temp': fldas.select('Tair_f_tavg')}).rename('temp'))
+        .addBands(fldas.expression('rad * 60 * 60 * 24 * 30 / 1e6 * 0.5', {'rad': fldas.select('Swnet_tavg')}).rename('par'));
+
+      var ndvi_pro = ndvi.multiply(0.0001);
+      var SR = ndvi_pro.add(1).divide(ee.Image(1).subtract(ndvi_pro)).rename('SR');
+
+      var SR_min = SR.reduceRegion({reducer: ee.Reducer.min(), geometry: geometry, scale: 1000}).get('SR');
+      var SR_max = SR.reduceRegion({reducer: ee.Reducer.max(), geometry: geometry, scale: 1000}).get('SR');
+
+      var FPAR = SR.subtract(ee.Number(SR_min)).divide(ee.Number(SR_max).subtract(ee.Number(SR_min))).clamp(0, 0.95);
+      var FPAR_filled = FPAR.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(FPAR);
+
+      var WE = evap.expression(
+        '0.5 * ((0.5 + E) / Ep)', {
+          'E': evap.select('ET'),
+          'Ep': evap.select('PET')
+        }).rename('WE');
+      var WE_filled = WE.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(WE);
+
+      var T_opt = rain_temp_par.select('temp');
+      var Te1 = ee.Image(0.8).add(T_opt.multiply(0.027)).subtract(T_opt.pow(2).multiply(0.00005));
+      var Te2 = ee.Image(1.184)
+        .divide(ee.Image(1).add(T_opt.subtract(10).subtract(T_opt).multiply(0.2).exp()))
+        .multiply(ee.Image(1).divide(ee.Image(1).add(T_opt.subtract(10).add(T_opt).multiply(0.3).exp())));
+
+      var epsilon = Te1.multiply(Te2).multiply(WE_filled).multiply(0.95);
+      var epsilon_filled = epsilon.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(epsilon);
+
+      var common_mask = FPAR_filled.mask()
+        .and(epsilon_filled.mask())
+        .and(WE_filled.mask())
+        .and(rain_temp_par.select('par').mask());
+
+      var par_masked = rain_temp_par.select('par').updateMask(common_mask);
+      var NPP = par_masked.multiply(FPAR_filled).multiply(epsilon_filled).rename('NPP');
+
+      var meanNPP = NPP.reduceRegion({
+        reducer: ee.Reducer.mean(),
+        geometry: geometry,
+        scale: 1000,
+        maxPixels: 1e9
+      }).get('NPP');
+
+      var totalCarbon_g = ee.Number(meanNPP).multiply(cityArea);
+      var totalCO2_g = totalCarbon_g.multiply(44).divide(12);
+      var totalCO2_kt = totalCO2_g.divide(1e8);
+
+      var netEmission = emission.subtract(totalCO2_kt);
+
+      return ee.Feature(null, {
+        'month': m,
+        'emission': emission,
+        'sequestration': totalCO2_kt,
+        'netEmission': netEmission
+      });
+    })(), null);
+  });
+
+  var fc = ee.FeatureCollection(monthly)
+    .filter(ee.Filter.notNull(['emission']))
+    .sort('month');
+
+  var chart = ui.Chart.feature.byFeature(fc, 'month', ['emission', 'sequestration', 'netEmission'])
+    .setChartType('LineChart')
+    .setOptions({
+      title: 'Monthly Carbon Emission / Sequestration / Net Emission\n' + urbanAggName + '（' + year + '）',
+      hAxis: {title: 'Month'},
+      vAxis: {title: 'Amount (10ktons CO₂)'},
+      lineWidth: 2,
+      pointSize: 4,
+      height: 300,
+      legend: {position: 'bottom'}
+    });
+
+  chartPanel.add(chart);
+}
+
+// figure3: Total carbon emisssions,sequestration,netemisssions amount in provinces (10ktons CO₂)
+function plotProvinceCarbonChart(provinceName, geometry, year) {
+  var months = ee.List.sequence(1, 12);
+  var cityArea = geometry.area();
+
+  var sampleCity = matchedCities.filter(ee.Filter.eq('NAME_1', provinceName)).first();
+  var region = sampleCity.get('region');
+  var Vit = sampleCity.get('Vit');
+
+  var monthly = months.map(function(m) {
+    var start = ee.Date.fromYMD(year, m, 1);
+    var end = start.advance(1, 'month');
+
+    var nightLight = dataset.filterDate(start, end).mean().clip(geometry);
+    var fldas = ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001')
+      .filterDate(start, end).first();
+    var ndvi = ee.ImageCollection('MODIS/061/MOD13A2')
+      .filterDate(start, end).select('NDVI').first();
+    var evapCollection = ee.ImageCollection(
+      year <= 2020 ? 'MODIS/061/MOD16A2GF' : 'MODIS/061/MOD16A2'
+    );
+    var evap = evapCollection.filterDate(start, end).first();
+
+    return ee.Algorithms.If(nightLight && fldas && ndvi && evap, (function() {
+      var meanDN = nightLight.select('avg_rad').reduceRegion({
+        reducer: ee.Reducer.mean(),
+        geometry: geometry,
+        scale: 500,
+        maxPixels: 1e9
+      }).get('avg_rad');
+      meanDN = ee.Algorithms.If(meanDN, meanDN, 0);
+      var logDN = ee.Number(meanDN).log();
+      var logNCitj = ee.Algorithms.If(
+        ee.String(region).equals('eastern'),
+        logDN.multiply(1.0484).add(ee.Number(Vit).subtract(6.1871)),
+        ee.Algorithms.If(
+          ee.String(region).equals('central'),
+          logDN.multiply(0.8773).subtract(4.2414),
+          ee.Algorithms.If(
+            ee.String(region).equals('western'),
+            logDN.multiply(0.3645).add(ee.Number(Vit).add(2.2189)),
+            0
+          )
+        )
+      );
+      var NCitj = ee.Number(logNCitj).exp();
+      var emission = NCitj.multiply(cityArea).divide(250000);
+
+      var rain_temp_par = fldas.expression(
+        'rain * 60 * 60 * 24 * 30', {'rain': fldas.select('Rainf_f_tavg')}
+      ).rename('rain')
+        .addBands(fldas.expression('temp - 273.15', {'temp': fldas.select('Tair_f_tavg')}).rename('temp'))
+        .addBands(fldas.expression('rad * 60 * 60 * 24 * 30 / 1e6 * 0.5', {'rad': fldas.select('Swnet_tavg')}).rename('par'));
+
+      var ndvi_pro = ndvi.multiply(0.0001);
+      var SR = ndvi_pro.add(1).divide(ee.Image(1).subtract(ndvi_pro)).rename('SR');
+
+      var SR_min = SR.reduceRegion({reducer: ee.Reducer.min(), geometry: geometry, scale: 1000}).get('SR');
+      var SR_max = SR.reduceRegion({reducer: ee.Reducer.max(), geometry: geometry, scale: 1000}).get('SR');
+
+      var FPAR = SR.subtract(ee.Number(SR_min)).divide(ee.Number(SR_max).subtract(ee.Number(SR_min))).clamp(0, 0.95);
+      var FPAR_filled = FPAR.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(FPAR);
+
+      var WE = evap.expression(
+        '0.5 * ((0.5 + E) / Ep)', {
+          'E': evap.select('ET'),
+          'Ep': evap.select('PET')
+        }).rename('WE');
+      var WE_filled = WE.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(WE);
+
+      var T_opt = rain_temp_par.select('temp');
+      var Te1 = ee.Image(0.8).add(T_opt.multiply(0.027)).subtract(T_opt.pow(2).multiply(0.00005));
+      var Te2 = ee.Image(1.184)
+        .divide(ee.Image(1).add(T_opt.subtract(10).subtract(T_opt).multiply(0.2).exp()))
+        .multiply(ee.Image(1).divide(ee.Image(1).add(T_opt.subtract(10).add(T_opt).multiply(0.3).exp())));
+
+      var epsilon = Te1.multiply(Te2).multiply(WE_filled).multiply(0.95);
+      var epsilon_filled = epsilon.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(epsilon);
+
+      var common_mask = FPAR_filled.mask()
+        .and(epsilon_filled.mask())
+        .and(WE_filled.mask())
+        .and(rain_temp_par.select('par').mask());
+
+      var par_masked = rain_temp_par.select('par').updateMask(common_mask);
+      var NPP = par_masked.multiply(FPAR_filled).multiply(epsilon_filled).rename('NPP');
+
+      var meanNPP = NPP.reduceRegion({
+        reducer: ee.Reducer.mean(),
+        geometry: geometry,
+        scale: 1000,
+        maxPixels: 1e9
+      }).get('NPP');
+
+      var totalCarbon_g = ee.Number(meanNPP).multiply(cityArea);
+      var totalCO2_g = totalCarbon_g.multiply(44).divide(12);
+      var totalCO2_kt = totalCO2_g.divide(1e8);
+
+      var netEmission = emission.subtract(totalCO2_kt);
+
+      return ee.Feature(null, {
+        'month': m,
+        'emission': emission,
+        'sequestration': totalCO2_kt,
+        'netEmission': netEmission
+      });
+    })(), null);
+  });
+
+  var fc = ee.FeatureCollection(monthly)
+    .filter(ee.Filter.notNull(['emission']))
+    .sort('month');
+
+  var chart = ui.Chart.feature.byFeature(fc, 'month', ['emission', 'sequestration', 'netEmission'])
+    .setChartType('LineChart')
+    .setOptions({
+      title: 'Monthly Carbon Emission / Sequestration / Net Emission\n' + provinceName + '（' + year + '）',
+      hAxis: {title: 'Month'},
+      vAxis: {title: 'Amount (10ktons CO₂)'},
+      lineWidth: 2,
+      pointSize: 4,
+      height: 300,
+      legend: {position: 'bottom'}
+    });
+
+  chartPanel.add(chart);
+}
+
+// figure4: Total carbon emisssions,sequestration,netemisssions amount in cities (10ktons CO₂)
+function plotSinglecityCarbonChart(cityName, geometry, year) {
+  return new Promise(function(resolve, reject) {
+    var months = ee.List.sequence(1, 12);
+    var cityArea = geometry.area();
+    var cityFeature = matchedCities.filterBounds(geometry).first();
+    var region = cityFeature.get('region');
+    var Vit = cityFeature.get('Vit');
+
+    var monthly = months.map(function(m) {
+      var start = ee.Date.fromYMD(year, m, 1);
+      var end = start.advance(1, 'month');
+
+      var nightLight = dataset.filterDate(start, end).mean().clip(geometry);
+      var fldas = ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001').filterDate(start, end).first();
+      var ndvi = ee.ImageCollection('MODIS/061/MOD13A2').filterDate(start, end).select('NDVI').first();
+      var evapCollection = ee.ImageCollection(year <= 2020 ? 'MODIS/061/MOD16A2GF' : 'MODIS/061/MOD16A2');
+      var evap = evapCollection.filterDate(start, end).first();
+
+      return ee.Algorithms.If(nightLight && fldas && ndvi && evap, (function() {
+        var meanDN = nightLight.select('avg_rad').reduceRegion({
+          reducer: ee.Reducer.mean(),
+          geometry: geometry,
+          scale: 500,
+          maxPixels: 1e9
+        }).get('avg_rad');
+        meanDN = ee.Algorithms.If(meanDN, meanDN, 0);
+        var logDN = ee.Number(meanDN).log();
+
+        var logNCitj = ee.Algorithms.If(
+          ee.String(region).equals('eastern'),
+          logDN.multiply(1.0484).add(ee.Number(Vit).subtract(6.1871)),
+          ee.Algorithms.If(
+            ee.String(region).equals('central'),
+            logDN.multiply(0.8773).subtract(4.2414),
+            logDN.multiply(0.3645).add(ee.Number(Vit).add(2.2189))
+          )
+        );
+
+        var NCitj = ee.Number(logNCitj).exp();
+        var emission = NCitj.multiply(cityArea).divide(250000);
+
+        var rain_temp_par = fldas.expression(
+          'rain * 60 * 60 * 24 * 30', {'rain': fldas.select('Rainf_f_tavg')}
+        ).rename('rain')
+          .addBands(fldas.expression('temp - 273.15', {'temp': fldas.select('Tair_f_tavg')}).rename('temp'))
+          .addBands(fldas.expression('rad * 60 * 60 * 24 * 30 / 1e6 * 0.5', {'rad': fldas.select('Swnet_tavg')}).rename('par'));
+
+        var ndvi_pro = ndvi.multiply(0.0001);
+        var SR = ndvi_pro.add(1).divide(ee.Image(1).subtract(ndvi_pro)).rename('SR');
+
+        var SR_min = SR.reduceRegion({reducer: ee.Reducer.min(), geometry: geometry, scale: 1000}).get('SR');
+        var SR_max = SR.reduceRegion({reducer: ee.Reducer.max(), geometry: geometry, scale: 1000}).get('SR');
+
+        var FPAR = SR.subtract(ee.Number(SR_min)).divide(ee.Number(SR_max).subtract(ee.Number(SR_min))).clamp(0, 0.95);
+        var FPAR_filled = FPAR.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(FPAR);
+
+        var WE = evap.expression(
+          '0.5 * ((0.5 + E) / Ep)', {
+            'E': evap.select('ET'),
+            'Ep': evap.select('PET')
+          }).rename('WE');
+        var WE_filled = WE.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(WE);
+
+        var T_opt = rain_temp_par.select('temp');
+        var Te1 = ee.Image(0.8).add(T_opt.multiply(0.027)).subtract(T_opt.pow(2).multiply(0.00005));
+        var Te2 = ee.Image(1.184)
+          .divide(ee.Image(1).add(T_opt.subtract(10).subtract(T_opt).multiply(0.2).exp()))
+          .multiply(ee.Image(1).divide(ee.Image(1).add(T_opt.subtract(10).add(T_opt).multiply(0.3).exp())));
+
+        var epsilon = Te1.multiply(Te2).multiply(WE_filled).multiply(0.95);
+        var epsilon_filled = epsilon.unmask().focal_mean({radius: 1, units: 'pixels'}).blend(epsilon);
+
+        var common_mask = FPAR_filled.mask().and(epsilon_filled.mask()).and(WE_filled.mask()).and(rain_temp_par.select('par').mask());
+        var par_masked = rain_temp_par.select('par').updateMask(common_mask);
+
+        var NPP = par_masked.multiply(FPAR_filled).multiply(epsilon_filled).rename('NPP');
+
+        var meanNPP = NPP.reduceRegion({
+          reducer: ee.Reducer.mean(),
+          geometry: geometry,
+          scale: 1000,
+          maxPixels: 1e9
+        }).get('NPP');
+
+        var totalCarbon_g = ee.Number(meanNPP).multiply(cityArea);
+        var totalCO2_g = totalCarbon_g.multiply(44).divide(12);
+        var totalCO2_kt = totalCO2_g.divide(1e8);
+
+        var netEmission = emission.subtract(totalCO2_kt);
+
+        return ee.FeatureCollection([
+          ee.Feature(null, {'month': m, 'value': totalCO2_kt, 'type': 'Sequestration'}),
+          ee.Feature(null, {'month': m, 'value': emission, 'type': 'Emission'}),
+          ee.Feature(null, {'month': m, 'value': netEmission, 'type': 'NetEmission'})
+        ]);
+      })(), null);
+    });
+
+    var fc = ee.FeatureCollection(monthly).flatten();
+
+    var chart = ui.Chart.feature.groups({
+      features: fc,
+      xProperty: 'month',
+      yProperty: 'value',
+      seriesProperty: 'type'
+    })
+    .setChartType('LineChart')
+    .setOptions({
+      title: 'Monthly Carbon Sequestration / Emissions / Net Emissions\n' + cityName + ' (' + year + ')',
+      hAxis: {title: 'Month'},
+      vAxis: {title: 'Amount (10ktons CO₂)'},
+      lineWidth: 2,
+      pointSize: 4,
+      height: 300,
+      legend: {position: 'bottom'}
+    });
+
+    chartPanel.add(chart);
+
+    var annualNetEmission = fc.filter(ee.Filter.eq('type', 'NetEmission'))
+      .aggregate_sum('value');
+
+    annualNetEmission.evaluate(function(netEmissionValue) {
+      if (netEmissionValue < 0) {
+        chartPanel.add(ui.Label('This city\'s annual net CO₂ emissions are less than zero, indicating a carbon sink city.'));
+        resolve();
+      } else {
+        var cityFeature = matchedCities.filter(ee.Filter.eq('NAME_2', cityName)).first();
+        var urbanAgg = cityFeature.get('UrbanAgg');
+        var urbanAggCities = matchedCities.filter(ee.Filter.eq('UrbanAgg', urbanAgg));
+        var urbanAggGeom = urbanAggCities.geometry();
+        var sampleRegion = cityFeature.get('region');
+        var sampleVit = cityFeature.get('Vit');
+
+        var urbanAggMonthly = months.map(function(m) {
+          var start = ee.Date.fromYMD(year, m, 1);
+          var end = start.advance(1, 'month');
+
+          var nightLight = dataset.filterDate(start, end).mean().clip(urbanAggGeom);
+          var meanDN = nightLight.select('avg_rad').reduceRegion({
+            reducer: ee.Reducer.mean(),
+            geometry: urbanAggGeom,
+            scale: 500,
+            maxPixels: 1e9
+          }).get('avg_rad');
+
+          meanDN = ee.Algorithms.If(meanDN, meanDN, 0);
+          var logDN = ee.Number(meanDN).log();
+          var logNCitj = ee.Algorithms.If(
+            ee.String(sampleRegion).equals('eastern'),
+            logDN.multiply(1.0484).add(ee.Number(sampleVit).subtract(6.1871)),
+            ee.Algorithms.If(
+              ee.String(sampleRegion).equals('central'),
+              logDN.multiply(0.8773).subtract(4.2414),
+              logDN.multiply(0.3645).add(ee.Number(sampleVit).add(2.2189))
+            )
+          );
+          var NCitj = ee.Number(logNCitj).exp();
+          var aggArea = urbanAggGeom.area();
+          var totalEmission = NCitj.multiply(aggArea).divide(250000);
+          return totalEmission;
+        });
+
+        var annualUrbanAggNetEmission = ee.Number(urbanAggMonthly.reduce(ee.Reducer.sum()));
+        var cityEmission = ee.Number(netEmissionValue);
+        var restEmission = annualUrbanAggNetEmission.subtract(cityEmission);
+
+        var pieData = ee.FeatureCollection([
+          ee.Feature(null, {'category': cityName, 'emission': cityEmission}),
+          ee.Feature(null, {'category': 'Rest of ' + urbanAgg.getInfo(), 'emission': restEmission})
+        ]);
+
+        var pieChart = ui.Chart.feature.byFeature(pieData, 'category', 'emission')
+          .setChartType('PieChart')
+          .setOptions({
+            title: 'Annual Net CO₂ Emissions Comparison (10ktons):\nCity vs Rest of Urban Agglomeration',
+            sliceVisibilityThreshold: 0,
+            legend: {position: 'right'},
+            pieSliceText: 'percentage',
+            height: 280
+          });
+
+        chartPanel.add(pieChart);
+        resolve();
+      }
+    });
+  });
+}
+```
 
 ## Bibliography
